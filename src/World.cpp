@@ -147,7 +147,7 @@ void World::generate(string strSeed)
 	generator.seed(seed);
 
 	// Задаём распределение(диапазон значений) для нашего генератора
-	uniform_int_distribution<int> mapDistribution(0, 1);
+	uniform_int_distribution<int> mapDistribution(1, 5);
 
 	int** firstMatrix = new int*[ROW_NUMBER];
 	int** secondMatrix = new int* [ROW_NUMBER];
@@ -162,14 +162,15 @@ void World::generate(string strSeed)
 	{
 		for (size_t j{ 0 }; j < COLUMN_NUMBER; j++)
 		{
-			firstMatrix[i][j] = mapDistribution(generator);
+			// Пол появляется в 3-х случаях из 5
+			firstMatrix[i][j] = mapDistribution(generator)/4;
 		}
 	}
 	// Отображаем начальное состояние системы
 	//showMatrix(firstMatrix, ROW_NUMBER, COLUMN_NUMBER);
 	//cin.get();
 	
-	// Клетка рождается, если у нее 6,7 или 8 соседей
+	// Клетка рождается, если у нее 5,6,7 или 8 соседей
 	// Клетка сохраняется, если у нее 3,4,5,6,7,8 соседей
 	// Клетка умирает, если у нее 0, 1 или 2 соседа
 	// B678/S345678
@@ -185,7 +186,7 @@ void World::generate(string strSeed)
 				int neighbours{ countNeigbourCells(firstMatrix, Coordinate{i, j}) };
 				if (currentCell == 0)
 				{
-					if (6 <= neighbours && neighbours <= 8)
+					if (5 <= neighbours && neighbours <= 8)
 					{
 						// Пол становится стеной
 						secondMatrix[i][j] = 1;

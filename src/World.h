@@ -1,22 +1,10 @@
 #pragma once
 #include<string>
 #include<map>
+#include"Сoordinate.h"
 
 using std::map;
 using std::string;
-
-class Coordinate
-{
-public:
-	/// <summary>
-	/// Номер строки
-	/// </summary>
-	int row;
-	/// <summary>
-	/// Номер столбца
-	/// </summary>
-	int col;
-};
 
 class World
 {
