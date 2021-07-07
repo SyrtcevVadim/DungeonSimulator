@@ -54,14 +54,14 @@ int World::countNeigbourCells(int** matrix, Coordinate coord)
 	int counter{ 0 };
 	Coordinate neighbours[8]
 	{
-		{ coord.col - 1, coord.row - 1 },	// Левый верхний угол
-		{ coord.col, coord.row - 1 },		// Верхний
-		{ coord.col + 1, coord.row - 1 },	// Правый верхний угол
-		{ coord.col - 1, coord.row },		// Левый
-		{ coord.col + 1, coord.row },		// Правый
-		{ coord.col - 1, coord.row + 1 },	// Левый нижний угол
-		{ coord.col, coord.row + 1 },		// Нижний
-		{ coord.col + 1, coord.row + 1 }	// Правый нижний угол
+		{ coord.row - 1, coord.col - 1 },	// Левый верхний угол
+		{ coord.row - 1, coord.col  },		// Верхний
+		{ coord.row - 1, coord.col + 1  },	// Правый верхний угол
+		{ coord.row, coord.col - 1  },		// Левый
+		{ coord.row, coord.col + 1  },		// Правый
+		{ coord.row + 1, coord.col - 1 },	// Левый нижний угол
+		{ coord.row + 1, coord.col  },		// Нижний
+		{ coord.row + 1, coord.col + 1  }	// Правый нижний угол
 	};
 	for (Coordinate coord : neighbours)
 	{
@@ -129,7 +129,7 @@ void World::generate(string strSeed)
 			for (int j{ 0 }; j < COLUMN_NUMBER; j++)
 			{
 				int currentCell{ firstMatrix[i][j] };
-				int neighbours{ countNeigbourCells(firstMatrix, Coordinate{j, i}) };
+				int neighbours{ countNeigbourCells(firstMatrix, Coordinate{i, j}) };
 				if (currentCell == 0)
 				{
 					if (6 <= neighbours && neighbours <= 8)

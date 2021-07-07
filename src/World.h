@@ -7,15 +7,13 @@ class Coordinate
 {
 public:
 	/// <summary>
-	/// Номер столбца
-	/// </summary>
-	int col;
-	/// <summary>
 	/// Номер строки
 	/// </summary>
 	int row;
-	
-	
+	/// <summary>
+	/// Номер столбца
+	/// </summary>
+	int col;
 };
 
 class World
