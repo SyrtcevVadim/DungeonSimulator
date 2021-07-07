@@ -19,11 +19,18 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DynamicEntity.cpp" />
+    <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\StaticEntity.cpp" />
     <ClCompile Include="src\World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\DynamicEntity.h" />
+    <ClInclude Include="src\Entity.h" />
+    <ClInclude Include="src\StaticEntity.h" />
     <ClInclude Include="src\World.h" />
+    <ClInclude Include="src\Utilities.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

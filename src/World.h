@@ -1,7 +1,7 @@
 #pragma once
 #include<string>
 #include<map>
-#include"Сoordinate.h"
+#include"Utilities.h"
 
 using std::map;
 using std::string;
@@ -37,10 +37,12 @@ private:
 	/// </summary>
 	const int ROW_NUMBER;
 
+	
+
 	/// <summary>
 	/// Количество итераций цикла генерации карты
 	/// </summary>
-	const int GENERATOR_ITERATIONS{ 5 };
+	const int GENERATOR_ITERATIONS{ 10 };
 
 	/// <summary>
 	/// Матрица текущего состояния игрового поля
@@ -68,7 +70,7 @@ private:
 	/// </summary>
 	bool isAlive(int** matrix, Coordinate coord);
 
-	void drawMapBorders(int** matrix);
+	void addMapBorders(int** matrix);
 
 	void swapBuffers(int** &a, int** &b);
 

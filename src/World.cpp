@@ -1,5 +1,6 @@
 #include "World.h"
 #include"../lib/rlutil/rlutil.h"
+#include"Utilities.h"
 
 
 #include<stdio.h>
@@ -16,8 +17,8 @@ using std::uniform_int_distribution;
 
 map<int, char> World::symbolTable
 {
-	{0, '.'},
-	{1, '#'}
+	{0, FLOOR_SYMBOL},
+	{1, WALL_SYMBOL}
 };
 
 void showMatrix(int** matrix, unsigned int row, unsigned int col)
@@ -93,7 +94,7 @@ World::World(unsigned int rowNum, unsigned int colNum) :
 	}
 }
 
-void World::drawMapBorders(int** matrix)
+void World::addMapBorders(int** matrix)
 {
 	// Вертикальные границы
 	for (int i{ 0 }; i < ROW_NUMBER; i++)
@@ -133,10 +134,23 @@ void World::drawMap()
 	{
 		for (int j{ 0 }; j < COLUMN_NUMBER; j++)
 		{
+			char currentSymbol{ currentFrameBuffer[i][j] };
+
+			if (currentSymbol == WALL_SYMBOL)
+			{
+				// Окрашиваем стены в тёмно-серый цвет
+				rlutil::setColor(Color::GRAY);
+			}
+			else if (currentSymbol == FLOOR_SYMBOL)
+			{
+				rlutil::setColor(Color::WHITE);
+			}
 			cout << currentFrameBuffer[i][j];
 		}
 		cout << '\n';
 	}
+	rlutil::resetColor();
+	cout << '\n';
 }
 
 void World::generate(string strSeed)
@@ -217,7 +231,7 @@ void World::generate(string strSeed)
 	}
 
 	// Рисуем границы карты
-	drawMapBorders(firstMatrix);
+	addMapBorders(firstMatrix);
 
 	// Делаем карту из матрицы сгенерированных данных
 	makeMap(firstMatrix);
