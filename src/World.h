@@ -1,6 +1,8 @@
 #pragma once
 #include<string>
+#include<map>
 
+using std::map;
 using std::string;
 
 class Coordinate
@@ -30,18 +32,27 @@ public:
 	/// <summary>
 	/// Отрисовывает картинку в консоли
 	/// </summary>
-	void render();
+	void drawMap();
 
 
 private:
 	/// <summary>
+	/// Таблица код-объект. Каждому коду соответствует свой символ объекта
+	/// </summary>
+	static map<int, char> symbolTable;
+	/// <summary>
 	/// Ширина игрового поля
 	/// </summary
-	const unsigned int COLUMN_NUMBER;
+	const int COLUMN_NUMBER;
 	/// <summary>
 	/// Высота игрового поля
 	/// </summary>
-	const unsigned int ROW_NUMBER;
+	const int ROW_NUMBER;
+
+	/// <summary>
+	/// Количество итераций цикла генерации карты
+	/// </summary>
+	const int GENERATOR_ITERATIONS{ 5 };
 
 	/// <summary>
 	/// Матрица текущего состояния игрового поля
@@ -68,5 +79,14 @@ private:
 	/// Проверяет, жива ли клетка по координатам coord
 	/// </summary>
 	bool isAlive(int** matrix, Coordinate coord);
+
+	void drawMapBorders(int** matrix);
+
+	void swapBuffers(int** &a, int** &b);
+
+	/// <summary>
+	/// Делает символьную карту на основе сгенерированного буфера чисел
+	/// </summary>
+	void makeMap(int** matrix);
 };
 

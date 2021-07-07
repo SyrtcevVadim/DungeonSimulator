@@ -1,6 +1,8 @@
 #include "World.h"
 #include"../lib/rlutil/rlutil.h"
 
+
+#include<stdio.h>
 #include<iostream>
 #include<string>
 #include<random>
@@ -12,7 +14,11 @@ using std::seed_seq;
 using std::mt19937;
 using std::uniform_int_distribution;
 
-
+map<int, char> World::symbolTable
+{
+	{0, '.'},
+	{1, '#'}
+};
 
 void showMatrix(int** matrix, unsigned int row, unsigned int col)
 {
@@ -87,6 +93,52 @@ World::World(unsigned int rowNum, unsigned int colNum) :
 	}
 }
 
+void World::drawMapBorders(int** matrix)
+{
+	// Вертикальные границы
+	for (int i{ 0 }; i < ROW_NUMBER; i++)
+	{
+		matrix[i][0] = matrix[i][COLUMN_NUMBER - 1] = 1;
+	}
+	// Горизонтальные границы
+	for (int i{ 0 }; i < COLUMN_NUMBER; i++)
+	{
+		matrix[0][i] = matrix[ROW_NUMBER - 1][i] = 1;
+	}
+}
+
+void World::swapBuffers(int **&a, int **&b)
+{
+	int** temp = a;
+	a = b;
+	b = temp;
+}
+
+void World::makeMap(int** matrix)
+{
+	for (int i{ 0 }; i < ROW_NUMBER; i++)
+	{
+		for (int j{ 0 }; j < COLUMN_NUMBER; j++)
+		{
+			currentFrameBuffer[i][j] = symbolTable[matrix[i][j]];
+		}
+	}
+}
+
+void World::drawMap()
+{
+	rlutil::cls();
+	rlutil::hidecursor();
+	for (int i{ 0 }; i < ROW_NUMBER; i++)
+	{
+		for (int j{ 0 }; j < COLUMN_NUMBER; j++)
+		{
+			cout << currentFrameBuffer[i][j];
+		}
+		cout << '\n';
+	}
+}
+
 void World::generate(string strSeed)
 {
 	// Создаём ключ-генерации на основе пользовательской строки
@@ -114,15 +166,16 @@ void World::generate(string strSeed)
 		}
 	}
 	// Отображаем начальное состояние системы
-	showMatrix(firstMatrix, ROW_NUMBER, COLUMN_NUMBER);
-	cin.get();
-	// Запускаем клеточный автомат
+	//showMatrix(firstMatrix, ROW_NUMBER, COLUMN_NUMBER);
+	//cin.get();
+	
 	// Клетка рождается, если у нее 6,7 или 8 соседей
 	// Клетка сохраняется, если у нее 3,4,5,6,7,8 соседей
 	// Клетка умирает, если у нее 0, 1 или 2 соседа
 	// B678/S345678
 	// Живая клетка - стена(1), мертвая - пол(0)
-	for (int k{ 0 }; k < 10; k++)
+	// Запускаем клеточный автомат
+	for (int k{ 0 }; k < GENERATOR_ITERATIONS; k++)
 	{
 		for (int i{ 0 }; i < ROW_NUMBER; i++)
 		{
@@ -159,16 +212,14 @@ void World::generate(string strSeed)
 			}
 		}
 		// Меняем firstMatrix и secondMatrix местами
-		int** temp = firstMatrix;
-		firstMatrix = secondMatrix;
-		secondMatrix = temp;
-		// Отображаем результат
-		showMatrix(firstMatrix, ROW_NUMBER, COLUMN_NUMBER);
-		cin.get();
+		swapBuffers(firstMatrix, secondMatrix);
 	}
-	cout << "end!\n";
 
+	// Рисуем границы карты
+	drawMapBorders(firstMatrix);
 
+	// Делаем карту из матрицы сгенерированных данных
+	makeMap(firstMatrix);
 
 	for (int i{ 0 }; i < ROW_NUMBER; i++)
 	{

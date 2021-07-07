@@ -19,6 +19,7 @@ int main()
 
 	World world(50, 100);
 	world.generate(userSeed);
+	world.drawMap();
 
 	return 0;
 }
