@@ -6,11 +6,13 @@
 #include<stdio.h>
 #include<iostream>
 #include<string>
+#include<algorithm>
 #include<random>
 
 using std::cout;
 using std::cin;
 using std::string;
+using std::find;
 using std::seed_seq;
 using std::mt19937;
 using std::uniform_int_distribution;
@@ -18,7 +20,8 @@ using std::uniform_int_distribution;
 map<int, char> World::symbolTable
 {
 	{0, FLOOR_SYMBOL},
-	{1, WALL_SYMBOL}
+	{1, WALL_SYMBOL},
+	{2, TREASURE_SYMBOL}
 };
 
 void showMatrix(int** matrix, unsigned int row, unsigned int col)
@@ -153,6 +156,87 @@ void World::drawMap()
 	cout << '\n';
 }
 
+
+bool World::areBuffersEqual(int** first, int** second)
+{
+	for (int i{ 0 }; i < ROW_NUMBER; i++)
+	{
+		for (int j{ 0 }; j < COLUMN_NUMBER; j++)
+		{
+			if (first[i][j] != second[i][j])
+			{
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+void World::startCellularAutomatonGeneration(int **&matrix, initializer_list<int> born, initializer_list<int> save)
+{
+	// Создаём вспомогательный буфер
+	int **secondMatrix = new int*[ROW_NUMBER];
+	for (int i{ 0 }; i < ROW_NUMBER; i++)
+	{
+		secondMatrix[i] = new int[COLUMN_NUMBER];
+	}
+
+
+	// Запускаем клеточный автомат
+	do
+	{
+		for (int i{ 0 }; i < ROW_NUMBER; i++)
+		{
+			for (int j{ 0 }; j < COLUMN_NUMBER; j++)
+			{
+				int currentCellValue{ matrix[i][j] };
+				// Количество живых соседей у текущей клетки
+				int neighbourCount{ countNeigbourCells(matrix, Coordinate{i,j}) };
+
+				// Если текущая клетка - пол(мёртвая)
+				if (currentCellValue == 0)
+				{
+					// Правило рождения стены
+					if (find(born.begin(), born.end(), neighbourCount) != born.end())
+					{
+						secondMatrix[i][j] = 1;
+					}
+					else
+					{
+						// Иначе клетка остаётся полом
+						secondMatrix[i][j] = 0;
+					}
+					
+				}
+				else if(currentCellValue == 1)
+				{
+					// Правило сохранения стены
+					if (find(save.begin(), save.end(), neighbourCount) != save.end())
+					{
+						secondMatrix[i][j] = 1;
+					}
+					else
+					{
+						// Стена превращается в пол
+						secondMatrix[i][j] = 0;
+					}
+				}
+			}
+		}
+		
+		// Меняем буферы местами
+		swapBuffers(matrix, secondMatrix);
+
+	} while (!areBuffersEqual(matrix, secondMatrix));
+	
+	// Освобождаем память
+	for (int i{ 0 }; i < ROW_NUMBER; i++)
+	{
+		delete[] secondMatrix[i];
+	}
+	delete[] secondMatrix;
+}
+
 void World::generate(string strSeed)
 {
 	// Создаём ключ-генерации на основе пользовательской строки
@@ -164,11 +248,9 @@ void World::generate(string strSeed)
 	uniform_int_distribution<int> mapDistribution(1, 5);
 
 	int** firstMatrix = new int*[ROW_NUMBER];
-	int** secondMatrix = new int* [ROW_NUMBER];
 	for (size_t i{ 0 }; i < ROW_NUMBER; i++)
 	{
 		firstMatrix[i] = new int[COLUMN_NUMBER];
-		secondMatrix[i] = new int[COLUMN_NUMBER];
 	}
 
 	// Задаём начальное условие для клеточного автомата
@@ -180,55 +262,9 @@ void World::generate(string strSeed)
 			firstMatrix[i][j] = mapDistribution(generator)/4;
 		}
 	}
-	// Отображаем начальное состояние системы
-	//showMatrix(firstMatrix, ROW_NUMBER, COLUMN_NUMBER);
-	//cin.get();
 	
-	// Клетка рождается, если у нее 5,6,7 или 8 соседей
-	// Клетка сохраняется, если у нее 3,4,5,6,7,8 соседей
-	// Клетка умирает, если у нее 0, 1 или 2 соседа
-	// B678/S345678
-	// Живая клетка - стена(1), мертвая - пол(0)
 	// Запускаем клеточный автомат
-	for (int k{ 0 }; k < GENERATOR_ITERATIONS; k++)
-	{
-		for (int i{ 0 }; i < ROW_NUMBER; i++)
-		{
-			for (int j{ 0 }; j < COLUMN_NUMBER; j++)
-			{
-				int currentCell{ firstMatrix[i][j] };
-				int neighbours{ countNeigbourCells(firstMatrix, Coordinate{i, j}) };
-				if (currentCell == 0)
-				{
-					if (5 <= neighbours && neighbours <= 8)
-					{
-						// Пол становится стеной
-						secondMatrix[i][j] = 1;
-					}
-					else
-					{
-						// Пол остаётся полом
-						secondMatrix[i][j] = 0;
-					}
-				}
-				if (currentCell == 1)
-				{
-					if (3 <= neighbours)
-					{
-						// Стена остаётся стеной
-						secondMatrix[i][j] = 1;
-					}
-					else
-					{
-						// Стена становится полом
-						secondMatrix[i][j] = 0;
-					}
-				}
-			}
-		}
-		// Меняем firstMatrix и secondMatrix местами
-		swapBuffers(firstMatrix, secondMatrix);
-	}
+	startCellularAutomatonGeneration(firstMatrix, { 5,6,7,8 }, { 3, 4,5,6,7,8 });
 
 	// Рисуем границы карты
 	addMapBorders(firstMatrix);
@@ -239,17 +275,15 @@ void World::generate(string strSeed)
 	for (int i{ 0 }; i < ROW_NUMBER; i++)
 	{
 		delete[] firstMatrix[i];
-		delete[] secondMatrix[i];
 	}
 	delete[] firstMatrix;
-	delete[] secondMatrix;
 
 }
 
 World::~World()
 {
 	// Удаляем память, выделенную под буферы
-	for (size_t i{ 0u }; i < ROW_NUMBER; i++)
+	for (int i{ 0 }; i < ROW_NUMBER; i++)
 	{
 		delete[] currentFrameBuffer[i];
 		delete[] nextFrameBuffer[i];

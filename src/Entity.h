@@ -4,7 +4,7 @@
 class Entity
 {
 public:
-	Entity(Coordinate coordinate);
+	Entity(Coordinate coordinate, char symbol, Color color);
 
 	Coordinate getCoordinate();
 	Color getColor();
@@ -13,6 +13,9 @@ protected:
 	Coordinate currentCoordinate;
 	// Цвет объекта
 	Color color;
-
+	/// <summary>
+	/// Символ объекта
+	/// </summary>
+	char symbol;
 };
 

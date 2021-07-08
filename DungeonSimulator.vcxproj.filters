@@ -33,6 +33,9 @@
     <ClCompile Include="src\StaticEntity.cpp">
       <Filter>Исходные файлы\src</Filter>
     </ClCompile>
+    <ClCompile Include="src\Treasure.cpp">
+      <Filter>Исходные файлы\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DynamicEntity.h">
@@ -48,6 +51,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="src\Utilities.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Treasure.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

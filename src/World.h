@@ -1,9 +1,11 @@
 #pragma once
 #include<string>
 #include<map>
+#include<initializer_list>
 #include"Utilities.h"
 
 using std::map;
+using std::initializer_list;
 using std::string;
 
 class World
@@ -37,8 +39,6 @@ private:
 	/// </summary>
 	const int ROW_NUMBER;
 
-	
-
 	/// <summary>
 	/// Количество итераций цикла генерации карты
 	/// </summary>
@@ -53,6 +53,19 @@ private:
 	/// Матрица следующего состояний игрового поля
 	/// </summary>
 	char** nextFrameBuffer;
+
+	/// <summary>
+	/// Запускает процедурную генерацию пещеры с помощью клеточного автомата.
+	/// </summary>
+	/// <param name="matrix">Матрица сгенерированной карты</param>
+	/// <param name="born">Задёт правила рождения стенок</param>
+	/// <param name="save">Задаёт правила сохранения стенок</param>
+	void startCellularAutomatonGeneration(int **&matrix, initializer_list<int> born, initializer_list<int> save);
+
+	/// <summary>
+	/// Проверяет, одинаковые ли буферы(поэлементно) или нет
+	/// </summary>
+	bool areBuffersEqual(int** first, int** second);
 
 	/// <summary>
 	/// Проверяет, находится ли координата в рамках матрицы
@@ -70,8 +83,15 @@ private:
 	/// </summary>
 	bool isAlive(int** matrix, Coordinate coord);
 
+	/// <summary>
+	/// Добавляет на карту граничные стены
+	/// </summary>
+	/// <param name="matrix"></param>
 	void addMapBorders(int** matrix);
 
+	/// <summary>
+	/// Меняет два буфера местами
+	/// </summary>
 	void swapBuffers(int** &a, int** &b);
 
 	/// <summary>

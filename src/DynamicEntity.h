@@ -3,7 +3,7 @@
 class DynamicEntity: public Entity
 {
 public:
-	DynamicEntity(Coordinate coordinate);
+	DynamicEntity(Coordinate coordinate, char symbol, Color color);
 private:
 	void move(Coordinate newCoordinate);
 };

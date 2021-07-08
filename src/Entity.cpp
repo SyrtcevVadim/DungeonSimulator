@@ -1,7 +1,7 @@
 #include"Entity.h"
 
-Entity::Entity(Coordinate coordinate):
-	currentCoordinate(coordinate)
+Entity::Entity(Coordinate coordinate, char symbol, Color color):
+	currentCoordinate(coordinate), symbol(symbol), color(color)
 {}
 
 Coordinate Entity::getCoordinate()
