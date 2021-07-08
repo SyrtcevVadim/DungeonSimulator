@@ -1,7 +1,8 @@
 #include "World.h"
 #include"../lib/rlutil/rlutil.h"
-#include"Utilities.h"
 
+#include"Utilities.h"
+#include"Generator.h"
 #include"Treasure.h"
 
 #include<stdio.h>
@@ -14,9 +15,7 @@ using std::cout;
 using std::cin;
 using std::string;
 using std::find;
-using std::seed_seq;
-using std::mt19937;
-using std::uniform_int_distribution;
+
 
 map<int, char> World::symbolTable
 {
@@ -254,17 +253,8 @@ void World::startCellularAutomatonGeneration(int **&matrix, initializer_list<int
 	delete[] secondMatrix;
 }
 
-void World::generate(string strSeed)
+void World::generate()
 {
-	// Создаём ключ-генерации на основе пользовательской строки
-	seed_seq seed(strSeed.begin(), strSeed.end());
-	mt19937 generator;
-	generator.seed(seed);
-
-	// Задаём распределение(диапазон значений) для нашего генератора
-	uniform_int_distribution<> mapDist(1, 5);
-	uniform_int_distribution<> objectsDist(1, 1'000);
-
 	int** firstMatrix = new int*[ROW_NUMBER];
 	for (size_t i{ 0 }; i < ROW_NUMBER; i++)
 	{
@@ -277,7 +267,7 @@ void World::generate(string strSeed)
 		for (size_t j{ 0 }; j < COLUMN_NUMBER; j++)
 		{
 			// Пол появляется в 3-х случаях из 5
-			firstMatrix[i][j] = mapDist(generator)/4;
+			firstMatrix[i][j] = Generator::getCell();
 		}
 	}
 	
@@ -296,7 +286,7 @@ void World::generate(string strSeed)
 		for (int j{ 1 }; j < COLUMN_NUMBER; j++)
 		{
 			// Сокровища могут появляться только на полу с определённой вероятностью
-			if (firstMatrix[i][j] == 0 && (objectsDist(generator) <= TREASURE_APPEAR_PROBABILITY))
+			if (firstMatrix[i][j] == 0 && (Generator::getObject() <= TREASURE_APPEAR_PROBABILITY))
 			{
 				treasures.push_back(Treasure(Coordinate{ i, j }, TREASURE_SYMBOL));
 			}

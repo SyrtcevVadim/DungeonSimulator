@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="src\DynamicEntity.cpp" />
     <ClCompile Include="src\Entity.cpp" />
+    <ClCompile Include="src\Generator.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\StaticEntity.cpp" />
     <ClCompile Include="src\Treasure.cpp" />
@@ -29,6 +30,7 @@
   <ItemGroup>
     <ClInclude Include="src\DynamicEntity.h" />
     <ClInclude Include="src\Entity.h" />
+    <ClInclude Include="src\Generator.h" />
     <ClInclude Include="src\StaticEntity.h" />
     <ClInclude Include="src\Treasure.h" />
     <ClInclude Include="src\World.h" />

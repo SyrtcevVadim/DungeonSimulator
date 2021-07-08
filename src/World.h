@@ -20,8 +20,7 @@ public:
 	/// <summary>
 	/// Процедурно генерирует мир на основе ключа.
 	/// </summary>
-	/// <param name="strSeed">Ключ генерации</param>
-	void generate(string strSeed);
+	void generate();
 
 	/// <summary>
 	/// Отрисовывает статическую карту в консоли

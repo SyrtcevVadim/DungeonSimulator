@@ -2,6 +2,7 @@
 #include<random>
 #include<string>
 
+#include"Generator.h"
 #include"World.h"
 
 using std::cout;
@@ -17,8 +18,9 @@ int main()
 	cout << "Please, enter a seed: ";
 	getline(cin, userSeed);
 
+	Generator::Init(userSeed);
 	World world(50, 100);
-	world.generate(userSeed);
+	world.generate();
 	// Рисуем статическую карту в консоли
 	world.drawMap();
 	// Отображаем статические и динамические объекты
