@@ -13,3 +13,8 @@ Color Entity::getColor()
 {
 	return color;
 }
+
+char Entity::getSymbol()
+{
+	return symbol;
+}

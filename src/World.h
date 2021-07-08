@@ -1,12 +1,16 @@
 #pragma once
 #include<string>
 #include<map>
+#include<list>
 #include<initializer_list>
 #include"Utilities.h"
+
+#include"Treasure.h"
 
 using std::map;
 using std::initializer_list;
 using std::string;
+using std::list;
 
 class World
 {
@@ -20,9 +24,16 @@ public:
 	void generate(string strSeed);
 
 	/// <summary>
-	/// Отрисовывает картинку в консоли
+	/// Отрисовывает статическую карту в консоли
 	/// </summary>
 	void drawMap();
+
+
+
+	/// <summary>
+	/// Обрабатывает жизненный цикл статических и динамических объектов на карте
+	/// </summary>
+	void render();
 
 
 private:
@@ -45,14 +56,16 @@ private:
 	const int GENERATOR_ITERATIONS{ 10 };
 
 	/// <summary>
-	/// Матрица текущего состояния игрового поля
+	/// Хранит информацию обо всех сокровищах на карте
 	/// </summary>
-	char** currentFrameBuffer;
+	list<Treasure> treasures;
+
 
 	/// <summary>
-	/// Матрица следующего состояний игрового поля
+	/// Матрица текущего состояния игрового поля
 	/// </summary>
-	char** nextFrameBuffer;
+	char** playingMap;
+
 
 	/// <summary>
 	/// Запускает процедурную генерацию пещеры с помощью клеточного автомата.

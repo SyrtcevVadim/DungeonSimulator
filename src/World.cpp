@@ -2,6 +2,7 @@
 #include"../lib/rlutil/rlutil.h"
 #include"Utilities.h"
 
+#include"Treasure.h"
 
 #include<stdio.h>
 #include<iostream>
@@ -21,7 +22,6 @@ map<int, char> World::symbolTable
 {
 	{0, FLOOR_SYMBOL},
 	{1, WALL_SYMBOL},
-	{2, TREASURE_SYMBOL}
 };
 
 void showMatrix(int** matrix, unsigned int row, unsigned int col)
@@ -86,14 +86,13 @@ int World::countNeigbourCells(int** matrix, Coordinate coord)
 World::World(unsigned int rowNum, unsigned int colNum) :
 	ROW_NUMBER(rowNum), COLUMN_NUMBER(colNum)
 {
+	rlutil::saveDefaultColor();
 	// Выделяем место под матрицы состояний
-	currentFrameBuffer = new char* [ROW_NUMBER];
-	nextFrameBuffer = new char* [ROW_NUMBER];
+	playingMap = new char* [ROW_NUMBER];
 
 	for (size_t i{ 0u }; i < ROW_NUMBER; i++)
 	{
-		currentFrameBuffer[i] = new char[COLUMN_NUMBER];
-		nextFrameBuffer[i] = new char[COLUMN_NUMBER];
+		playingMap[i] = new char[COLUMN_NUMBER];
 	}
 }
 
@@ -118,13 +117,14 @@ void World::swapBuffers(int **&a, int **&b)
 	b = temp;
 }
 
+
 void World::makeMap(int** matrix)
 {
 	for (int i{ 0 }; i < ROW_NUMBER; i++)
 	{
 		for (int j{ 0 }; j < COLUMN_NUMBER; j++)
 		{
-			currentFrameBuffer[i][j] = symbolTable[matrix[i][j]];
+			playingMap[i][j] = symbolTable[matrix[i][j]];
 		}
 	}
 }
@@ -137,7 +137,7 @@ void World::drawMap()
 	{
 		for (int j{ 0 }; j < COLUMN_NUMBER; j++)
 		{
-			char currentSymbol{ currentFrameBuffer[i][j] };
+			char currentSymbol{ playingMap[i][j] };
 
 			if (currentSymbol == WALL_SYMBOL)
 			{
@@ -148,12 +148,29 @@ void World::drawMap()
 			{
 				rlutil::setColor(Color::WHITE);
 			}
-			cout << currentFrameBuffer[i][j];
+			cout << playingMap[i][j];
 		}
 		cout << '\n';
 	}
 	rlutil::resetColor();
-	cout << '\n';
+	rlutil::locate(1, ROW_NUMBER + 1);
+}
+
+void World::render()
+{
+	// Обрабатываем статические объекты
+	for (Treasure t : treasures)
+	{
+		// Получаем координаты
+		int x{ t.getCoordinate().col };
+		int y{ t.getCoordinate().row };
+		// Позиционируем указатель. Прибавляем 1, поскольку в консоли координаты начинаются с 1(а у нас с 0)
+		rlutil::locate(x+1, y+1);
+		rlutil::setColor(t.getColor());
+		cout << t.getSymbol();
+	}
+	rlutil::resetColor();
+	rlutil::locate(1, ROW_NUMBER + 1);
 }
 
 
@@ -245,7 +262,8 @@ void World::generate(string strSeed)
 	generator.seed(seed);
 
 	// Задаём распределение(диапазон значений) для нашего генератора
-	uniform_int_distribution<int> mapDistribution(1, 5);
+	uniform_int_distribution<> mapDist(1, 5);
+	uniform_int_distribution<> objectsDist(1, 1'000);
 
 	int** firstMatrix = new int*[ROW_NUMBER];
 	for (size_t i{ 0 }; i < ROW_NUMBER; i++)
@@ -259,7 +277,7 @@ void World::generate(string strSeed)
 		for (size_t j{ 0 }; j < COLUMN_NUMBER; j++)
 		{
 			// Пол появляется в 3-х случаях из 5
-			firstMatrix[i][j] = mapDistribution(generator)/4;
+			firstMatrix[i][j] = mapDist(generator)/4;
 		}
 	}
 	
@@ -271,6 +289,20 @@ void World::generate(string strSeed)
 
 	// Делаем карту из матрицы сгенерированных данных
 	makeMap(firstMatrix);
+
+	// Генерируем сокровища на полу подземелья
+	for (int i{ 1 }; i < ROW_NUMBER-1; i++)
+	{
+		for (int j{ 1 }; j < COLUMN_NUMBER; j++)
+		{
+			// Сокровища могут появляться только на полу с определённой вероятностью
+			if (firstMatrix[i][j] == 0 && (objectsDist(generator) <= TREASURE_APPEAR_PROBABILITY))
+			{
+				treasures.push_back(Treasure(Coordinate{ i, j }, TREASURE_SYMBOL));
+			}
+		}
+	}
+
 
 	for (int i{ 0 }; i < ROW_NUMBER; i++)
 	{
@@ -285,10 +317,8 @@ World::~World()
 	// Удаляем память, выделенную под буферы
 	for (int i{ 0 }; i < ROW_NUMBER; i++)
 	{
-		delete[] currentFrameBuffer[i];
-		delete[] nextFrameBuffer[i];
+		delete[] playingMap[i];
 	}
 
-	delete[] currentFrameBuffer;
-	delete[] nextFrameBuffer;
+	delete[] playingMap;
 }

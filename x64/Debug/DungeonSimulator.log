@@ -1,0 +1,9 @@
+﻿  DynamicEntity.cpp
+  Entity.cpp
+  StaticEntity.cpp
+  Treasure.cpp
+  World.cpp
+D:\Projects\DungeonSimulator\lib\rlutil\rlutil.h(577,32): warning C4267: инициализация: преобразование из "size_t" в "unsigned int"; возможна потеря данных
+  main.cpp
+  Создание кода...
+  DungeonSimulator.vcxproj -> D:\Projects\DungeonSimulator\x64\Debug\DungeonSimulator.exe

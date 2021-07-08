@@ -19,7 +19,10 @@ int main()
 
 	World world(50, 100);
 	world.generate(userSeed);
+	// Рисуем статическую карту в консоли
 	world.drawMap();
+	// Отображаем статические и динамические объекты
+	world.render();
 
 	return 0;
 }

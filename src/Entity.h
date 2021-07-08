@@ -8,6 +8,7 @@ public:
 
 	Coordinate getCoordinate();
 	Color getColor();
+	char getSymbol();
 protected:
 	// Координаты объетка на карте
 	Coordinate currentCoordinate;
