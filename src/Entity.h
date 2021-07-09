@@ -6,7 +6,8 @@ class Entity
 public:
 	Entity(Position coordinate);
 
-	Position getCoordinate();
+	void setPosition(Position coordinate);
+	Position getPosition();
 	Color getColor();
 	char getSymbol();
 protected:

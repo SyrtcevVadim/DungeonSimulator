@@ -4,7 +4,13 @@ Entity::Entity(Position coordinate):
 	currentCoordinate(coordinate)
 {}
 
-Position Entity::getCoordinate()
+void Entity::setPosition(Position coordinate)
+{
+	currentCoordinate.col = coordinate.col;
+	currentCoordinate.row = coordinate.row;
+}
+
+Position Entity::getPosition()
 {
 	return currentCoordinate;
 }

@@ -2,6 +2,7 @@
 #include<random>
 #include<string>
 
+#include"../lib/rlutil/rlutil.h"
 #include"Generator.h"
 #include"World.h"
 
@@ -19,12 +20,17 @@ int main()
 	getline(cin, userSeed);
 
 	Generator::Init(userSeed);
-	World world(100, 200);
+	World world(50, 100);
 	world.generate();
-	// Рисуем статическую карту в консоли
+	// Рисуем первый кадр в консоли
 	world.drawMap();
-	// Отображаем статические и динамические объекты
-	world.render();
+
+	// Цикл рендеринга
+	while (1)
+	{	
+		rlutil::msleep(600);
+		world.render();
+	}
 
 	return 0;
 }

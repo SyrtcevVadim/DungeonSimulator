@@ -125,6 +125,7 @@ void World::drawMap()
 {
 	rlutil::cls();
 	rlutil::hidecursor();
+	// Рисуем карту
 	for (int i{ 0 }; i < ROW_NUMBER; i++)
 	{
 		for (int j{ 0 }; j < COLUMN_NUMBER; j++)
@@ -144,6 +145,30 @@ void World::drawMap()
 		}
 		cout << '\n';
 	}
+	// Рисуем объекты
+	// Обрабатываем статические объекты
+	for (Treasure t : treasures)
+	{
+		// Получаем координаты
+		int col{ t.getPosition().col };
+		int row{ t.getPosition().row };
+		// Позиционируем указатель. Прибавляем 1, поскольку в консоли координаты начинаются с 1(а у нас с 0)
+		rlutil::locate(col + 1, row + 1);
+		rlutil::setColor(t.getColor());
+		cout << t.getSymbol();
+	}
+	// Обрабатываем динамические объекты
+	for (Monster m : monsters)
+	{
+		int col{ m.getPosition().col };
+		int row{ m.getPosition().row };
+
+		// Рисуем объект
+		rlutil::locate(col + 1, row + 1);
+		rlutil::setColor(m.getColor());
+		cout << m.getSymbol();
+	}
+
 	rlutil::resetColor();
 	rlutil::locate(1, ROW_NUMBER + 1);
 }
@@ -151,23 +176,42 @@ void World::drawMap()
 void World::render()
 {
 	// Обрабатываем статические объекты
-	for (Treasure t : treasures)
+	for (Treasure &t : treasures)
 	{
 		// Получаем координаты
-		int x{ t.getCoordinate().col };
-		int y{ t.getCoordinate().row };
+		int col{ t.getPosition().col };
+		int row{ t.getPosition().row };
 		// Позиционируем указатель. Прибавляем 1, поскольку в консоли координаты начинаются с 1(а у нас с 0)
-		rlutil::locate(x+1, y+1);
+		rlutil::locate(col+1, row+1);
 		rlutil::setColor(t.getColor());
 		cout << t.getSymbol();
 	}
 	// Обрабатываем динамические объекты
-	for (Monster m : monsters)
+	for (Monster &m : monsters)
 	{
-		int x{ m.getCoordinate().col };
-		int y{ m.getCoordinate().row };
+		int col{ m.getPosition().col };
+		int row{ m.getPosition().row };
+		// Стираем старое положение объекта
+		rlutil::locate(col + 1, row + 1);
+		char currentSymbol{ playingMap[row][col] };
 
-		rlutil::locate(x + 1, y + 1);
+		if (find(WALL_SYMBOLS.begin(), WALL_SYMBOLS.end(), currentSymbol) != WALL_SYMBOLS.end())
+		{
+			// Окрашиваем стены в тёмно-серый цвет
+			rlutil::setColor(Color::GRAY);
+		}
+		else if (find(FLOOR_SYMBOLS.begin(), FLOOR_SYMBOLS.end(), currentSymbol) != FLOOR_SYMBOLS.end())
+		{
+			rlutil::setColor(Color::WHITE);
+		}
+		cout << playingMap[row][col];
+
+		// Просчитываем следующую позицию объекта
+		move(m);
+		col = m.getPosition().col;
+		row = m.getPosition().row;
+		// Рисуем объект в новой позиции
+		rlutil::locate(col + 1, row + 1);
 		rlutil::setColor(m.getColor());
 		cout << m.getSymbol();
 	}
@@ -265,8 +309,8 @@ int World::positionToNumber(Position pos)
 Position World::numberToPosition(int number)
 {
 	Position result;
-	result.row = number / ROW_NUMBER;
-	result.col = number % ROW_NUMBER;
+	result.row = number / COLUMN_NUMBER;
+	result.col = number % COLUMN_NUMBER;
 	return result;
 }
 
@@ -285,7 +329,7 @@ void World::createGraph(int **matrix)
 		{
 			Position currentPos{ i,j };
 			int currentNumber{positionToNumber(currentPos)};
-			/*fOut << "(" << currentPos.row << ","<<currentPos.col << ")->" << currentNumber << '\n';*/
+			fOut << "(" << currentPos.row << ","<<currentPos.col << ")->" << currentNumber << '\n';
 			// Если клетка проходимая - пол
 			if (matrix[i][j] == 0)
 			{
@@ -384,6 +428,32 @@ void World::generate()
 	delete[] firstMatrix;
 
 }
+
+void World::move(Monster& object)
+{
+	// Номер ячейки, в которой находится объект
+	int number{ positionToNumber(object.getPosition()) };
+	// Получаем количество соседей для текущей ячейки
+	int neighbourNumber{ static_cast<int>(adjacencyList[number].size()) };
+	// Вычисляем индекс ячейки, в которую будет двигаться объект
+	int nextCellIndex{ Generator::getNumber(0, neighbourNumber - 1) };
+	int nextCellNumber{ 0 };
+	int counter{ 0 };
+	for (int n : adjacencyList[number])
+	{
+		if (counter == nextCellIndex)
+		{
+			nextCellNumber = n;
+			break;
+		}
+		counter++;
+	}
+	// Перемещаем объект
+	rlutil::locate(1, ROW_NUMBER + 1);
+	cout << number << ", " << nextCellNumber << "      ";
+	object.setPosition(numberToPosition(nextCellNumber));
+}
+
 
 World::~World()
 {

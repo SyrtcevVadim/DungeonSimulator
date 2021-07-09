@@ -4,7 +4,5 @@ class DynamicEntity: public Entity
 {
 public:
 	DynamicEntity(Position coordinate);
-private:
-	virtual void move()=0;
 };
 

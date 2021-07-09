@@ -49,11 +49,6 @@ private:
 	const int ROW_NUMBER;
 
 	/// <summary>
-	/// Количество итераций цикла генерации карты
-	/// </summary>
-	const int GENERATOR_ITERATIONS{ 10 };
-
-	/// <summary>
 	/// Список смежности для графа, описывающего сеть ячеек пола, по которым можно передвигаться
 	/// </summary>
 	vector<list<int>> adjacencyList;
@@ -133,5 +128,7 @@ private:
 	/// Делает символьную карту на основе сгенерированного буфера чисел
 	/// </summary>
 	void makeMap(int** matrix);
+
+	void move(Monster& object);
 };
 
