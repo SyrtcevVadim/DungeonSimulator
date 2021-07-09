@@ -1,6 +1,8 @@
 #include"DynamicEntity.h"
-DynamicEntity::DynamicEntity(Coordinate coordinate,char symbol, Color color):
-	Entity(coordinate, symbol, color)
+
+
+DynamicEntity::DynamicEntity(Coordinate coordinate):
+	Entity(coordinate)
 {}
 
 void DynamicEntity::move(Coordinate coordinate)

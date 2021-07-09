@@ -3,7 +3,7 @@
 class StaticEntity : public Entity
 {
 public:
-	StaticEntity(Coordinate coord, char symbol, Color color);
+	StaticEntity(Coordinate coord);
 
 private:
 	

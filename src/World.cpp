@@ -301,11 +301,11 @@ void World::generate()
 			{
 				if (Generator::getObject() <= TREASURE_APPEAR_PROBABILITY)
 				{
-					treasures.push_back(Treasure(Coordinate{ i, j }, TREASURE_SYMBOL));
+					treasures.push_back(Treasure(Coordinate{ i, j }));
 				}
 				else if (Generator::getObject() <= MONSTER_APPEAR_PROBABILITY)
 				{
-					monsters.push_back(Monster(Coordinate{ i,j }, MONSTER_SYMBOL, Color::RED));
+					monsters.push_back(Monster(Coordinate{ i,j }));
 				}
 			}
 		}

@@ -24,3 +24,9 @@ int Generator::getObject()
 {
 	return objectsDistribution(generator);
 }
+
+int Generator::getNumber(int min, int max)
+{
+	uniform_int_distribution<> dist(min, max);
+	return dist(generator);
+}

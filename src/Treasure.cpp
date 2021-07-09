@@ -1,7 +1,14 @@
 #include"Treasure.h"
-#include"StaticEntity.h"
+#include"Generator.h"
 
-Treasure::Treasure(Coordinate coord, char symbol) :
-	StaticEntity(coord, symbol, Color::GOLD)
-{}
+
+const vector<char> Treasure::SYMBOLS{ '$', '=', '?' };
+const Color Treasure::COLOR{ Color::GOLD };
+
+Treasure::Treasure(Coordinate coord) :
+	StaticEntity(coord)
+{
+	setColor(COLOR);
+	setSymbol(SYMBOLS[Generator::getNumber(0, SYMBOLS.size()-1)]);
+}
 

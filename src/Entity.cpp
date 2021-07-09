@@ -1,7 +1,7 @@
 #include"Entity.h"
 
-Entity::Entity(Coordinate coordinate, char symbol, Color color):
-	currentCoordinate(coordinate), symbol(symbol), color(color)
+Entity::Entity(Coordinate coordinate):
+	currentCoordinate(coordinate)
 {}
 
 Coordinate Entity::getCoordinate()
@@ -9,10 +9,22 @@ Coordinate Entity::getCoordinate()
 	return currentCoordinate;
 }
 
+void Entity::setColor(Color color)
+{
+	this->color = color;
+}
+
 Color Entity::getColor()
 {
 	return color;
 }
+
+
+void Entity::setSymbol(char symbol)
+{
+	this->symbol = symbol;
+}
+
 
 char Entity::getSymbol()
 {

@@ -18,6 +18,11 @@ public:
 	static int getCell();
 	static int getObject();
 
+	/// <summary>
+	/// Возвращает ПСЧ из отрезка [min, max]
+	/// </summary>
+	static int getNumber(int min, int max);
+
 private:
 	static mt19937 generator;
 

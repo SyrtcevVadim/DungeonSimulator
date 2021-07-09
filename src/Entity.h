@@ -4,7 +4,7 @@
 class Entity
 {
 public:
-	Entity(Coordinate coordinate, char symbol, Color color);
+	Entity(Coordinate coordinate);
 
 	Coordinate getCoordinate();
 	Color getColor();
@@ -18,5 +18,8 @@ protected:
 	/// Символ объекта
 	/// </summary>
 	char symbol;
+
+	void setColor(Color color);
+	void setSymbol(char symbol);
 };
 

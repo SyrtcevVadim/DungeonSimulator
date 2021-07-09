@@ -2,8 +2,16 @@
 #include"StaticEntity.h"
 #include"Utilities.h"
 
+#include<vector>
+
+using std::vector;
+
 class Treasure: public StaticEntity
 {
 public:
-	Treasure(Coordinate coord, char symbol);
+	Treasure(Coordinate coord);
+
+private:
+	static const vector<char> SYMBOLS;
+	static const Color COLOR;
 };
