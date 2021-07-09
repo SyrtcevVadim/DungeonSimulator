@@ -28,5 +28,6 @@ int Generator::getObject()
 int Generator::getNumber(int min, int max)
 {
 	uniform_int_distribution<> dist(min, max);
+
 	return dist(generator);
 }

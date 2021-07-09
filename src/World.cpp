@@ -5,7 +5,7 @@
 #include"Generator.h"
 #include"Treasure.h"
 
-#include<stdio.h>
+
 #include<iostream>
 #include<string>
 #include<algorithm>
@@ -15,27 +15,6 @@ using std::cout;
 using std::cin;
 using std::string;
 using std::find;
-
-
-map<int, char> World::symbolTable
-{
-	{0, FLOOR_SYMBOL},
-	{1, WALL_SYMBOL},
-};
-
-void showMatrix(int** matrix, unsigned int row, unsigned int col)
-{
-	rlutil::cls();
-	for (size_t i{ 0u }; i < row; i++)
-	{
-		for (size_t j{ 0u }; j < col; j++)
-		{
-			cout << matrix[i][j];
-		}
-		cout << '\n';
-	}
-}
-
 
 bool World::isInBounds(Coordinate coord)
 {
@@ -123,7 +102,16 @@ void World::makeMap(int** matrix)
 	{
 		for (int j{ 0 }; j < COLUMN_NUMBER; j++)
 		{
-			playingMap[i][j] = symbolTable[matrix[i][j]];
+			int currentCell = matrix[i][j];
+			if (currentCell == 0)
+			{
+				playingMap[i][j] = FLOOR_SYMBOLS[Generator::getNumber(0, FLOOR_SYMBOLS.size() - 1)];
+			}
+			else
+			{
+				playingMap[i][j] = WALL_SYMBOLS[Generator::getNumber(0, WALL_SYMBOLS.size() - 1)];
+			}
+			
 		}
 	}
 }
@@ -138,12 +126,12 @@ void World::drawMap()
 		{
 			char currentSymbol{ playingMap[i][j] };
 
-			if (currentSymbol == WALL_SYMBOL)
+			if (find(WALL_SYMBOLS.begin(), WALL_SYMBOLS.end(), currentSymbol) != WALL_SYMBOLS.end())
 			{
 				// Окрашиваем стены в тёмно-серый цвет
 				rlutil::setColor(Color::GRAY);
 			}
-			else if (currentSymbol == FLOOR_SYMBOL)
+			else if (find(FLOOR_SYMBOLS.begin(), FLOOR_SYMBOLS.end(), currentSymbol) != FLOOR_SYMBOLS.end())
 			{
 				rlutil::setColor(Color::WHITE);
 			}

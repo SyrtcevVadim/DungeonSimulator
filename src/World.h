@@ -38,10 +38,6 @@ public:
 
 private:
 	/// <summary>
-	/// Таблица код-объект. Каждому коду соответствует свой символ объекта
-	/// </summary>
-	static map<int, char> symbolTable;
-	/// <summary>
 	/// Ширина игрового поля
 	/// </summary
 	const int COLUMN_NUMBER;
