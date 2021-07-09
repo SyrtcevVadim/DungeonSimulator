@@ -6,6 +6,7 @@
 #include"Utilities.h"
 
 #include"Treasure.h"
+#include"Monster.h"
 
 using std::map;
 using std::initializer_list;
@@ -58,6 +59,11 @@ private:
 	/// Хранит информацию обо всех сокровищах на карте
 	/// </summary>
 	list<Treasure> treasures;
+
+	/// <summary>
+	/// Хранит информацию обо всех монстрах на карте
+	/// </summary>
+	list<Monster> monsters;
 
 
 	/// <summary>

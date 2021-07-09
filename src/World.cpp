@@ -168,6 +168,17 @@ void World::render()
 		rlutil::setColor(t.getColor());
 		cout << t.getSymbol();
 	}
+	// Обрабатываем динамические объекты
+	for (Monster m : monsters)
+	{
+		int x{ m.getCoordinate().col };
+		int y{ m.getCoordinate().row };
+
+		rlutil::locate(x + 1, y + 1);
+		rlutil::setColor(m.getColor());
+		cout << m.getSymbol();
+	}
+
 	rlutil::resetColor();
 	rlutil::locate(1, ROW_NUMBER + 1);
 }
@@ -280,15 +291,22 @@ void World::generate()
 	// Делаем карту из матрицы сгенерированных данных
 	makeMap(firstMatrix);
 
-	// Генерируем сокровища на полу подземелья
+	// Генерируем статические и динамические объекты на полу
 	for (int i{ 1 }; i < ROW_NUMBER-1; i++)
 	{
 		for (int j{ 1 }; j < COLUMN_NUMBER; j++)
 		{
-			// Сокровища могут появляться только на полу с определённой вероятностью
-			if (firstMatrix[i][j] == 0 && (Generator::getObject() <= TREASURE_APPEAR_PROBABILITY))
+			// Объекты могут появляться только на полу подземелья
+			if (firstMatrix[i][j] == 0)
 			{
-				treasures.push_back(Treasure(Coordinate{ i, j }, TREASURE_SYMBOL));
+				if (Generator::getObject() <= TREASURE_APPEAR_PROBABILITY)
+				{
+					treasures.push_back(Treasure(Coordinate{ i, j }, TREASURE_SYMBOL));
+				}
+				else if (Generator::getObject() <= MONSTER_APPEAR_PROBABILITY)
+				{
+					monsters.push_back(Monster(Coordinate{ i,j }, MONSTER_SYMBOL, Color::RED));
+				}
 			}
 		}
 	}
