@@ -1,5 +1,5 @@
 #include"StaticEntity.h"
 
-StaticEntity::StaticEntity(Coordinate coord):
+StaticEntity::StaticEntity(Position coord):
 	Entity(coord)
 {}

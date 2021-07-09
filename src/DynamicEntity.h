@@ -3,8 +3,8 @@
 class DynamicEntity: public Entity
 {
 public:
-	DynamicEntity(Coordinate coordinate);
+	DynamicEntity(Position coordinate);
 private:
-	void move(Coordinate newCoordinate);
+	virtual void move()=0;
 };
 

@@ -19,7 +19,7 @@ int main()
 	getline(cin, userSeed);
 
 	Generator::Init(userSeed);
-	World world(50, 100);
+	World world(100, 200);
 	world.generate();
 	// Рисуем статическую карту в консоли
 	world.drawMap();

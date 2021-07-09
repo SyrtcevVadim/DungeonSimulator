@@ -1,9 +1,11 @@
 #pragma once
 #include<vector>
+#include<map>
 
 using std::vector;
+using std::map;
 
-class Coordinate
+class Position
 {
 public:
 	/// <summary>

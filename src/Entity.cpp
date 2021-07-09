@@ -1,10 +1,10 @@
 #include"Entity.h"
 
-Entity::Entity(Coordinate coordinate):
+Entity::Entity(Position coordinate):
 	currentCoordinate(coordinate)
 {}
 
-Coordinate Entity::getCoordinate()
+Position Entity::getCoordinate()
 {
 	return currentCoordinate;
 }

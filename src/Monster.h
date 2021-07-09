@@ -2,7 +2,6 @@
 
 #include"DynamicEntity.h"
 #include"Generator.h"
-
 #include<vector>
 
 using std::vector;
@@ -10,7 +9,9 @@ using std::vector;
 class Monster: public DynamicEntity
 {
 public:
-	Monster(Coordinate coord);
+	Monster(Position coord);
+
+	virtual void move();
 
 private:
 	static const vector<char> SYMBOLS;

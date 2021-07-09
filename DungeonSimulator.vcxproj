@@ -26,6 +26,7 @@
     <ClCompile Include="src\Monster.cpp" />
     <ClCompile Include="src\StaticEntity.cpp" />
     <ClCompile Include="src\Treasure.cpp" />
+    <ClCompile Include="src\Utilities.cpp" />
     <ClCompile Include="src\World.cpp" />
   </ItemGroup>
   <ItemGroup>

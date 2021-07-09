@@ -1,6 +1,8 @@
 #include "World.h"
 #include"../lib/rlutil/rlutil.h"
 
+#include<fstream>
+
 #include"Utilities.h"
 #include"Generator.h"
 #include"Treasure.h"
@@ -11,12 +13,14 @@
 #include<algorithm>
 #include<random>
 
+using std::ofstream;
 using std::cout;
 using std::cin;
+using std::vector;
 using std::string;
 using std::find;
 
-bool World::isInBounds(Coordinate coord)
+bool World::isInBounds(Position coord)
 {
 	if (0 <= coord.col && coord.col < COLUMN_NUMBER)
 	{
@@ -28,7 +32,7 @@ bool World::isInBounds(Coordinate coord)
 	return false;
 }
 
-bool World::isAlive(int** matrix, Coordinate coord)
+bool World::isAlive(int** matrix, Position coord)
 {
 	if (matrix[coord.row][coord.col] == 1)
 	{
@@ -37,10 +41,11 @@ bool World::isAlive(int** matrix, Coordinate coord)
 	return false;
 }
 
-int World::countNeigbourCells(int** matrix, Coordinate coord)
+
+int World::countNeigbourCells(int** matrix, Position coord)
 {
 	int counter{ 0 };
-	Coordinate neighbours[8]
+	Position neighbours[8]
 	{
 		{ coord.row - 1, coord.col - 1 },	// Левый верхний угол
 		{ coord.row - 1, coord.col  },		// Верхний
@@ -51,7 +56,7 @@ int World::countNeigbourCells(int** matrix, Coordinate coord)
 		{ coord.row + 1, coord.col  },		// Нижний
 		{ coord.row + 1, coord.col + 1  }	// Правый нижний угол
 	};
-	for (Coordinate coord : neighbours)
+	for (Position coord : neighbours)
 	{
 		if (isInBounds(coord) && isAlive(matrix, coord))
 		{
@@ -206,7 +211,7 @@ void World::startCellularAutomatonGeneration(int **&matrix, initializer_list<int
 			{
 				int currentCellValue{ matrix[i][j] };
 				// Количество живых соседей у текущей клетки
-				int neighbourCount{ countNeigbourCells(matrix, Coordinate{i,j}) };
+				int neighbourCount{ countNeigbourCells(matrix, Position{i,j}) };
 
 				// Если текущая клетка - пол(мёртвая)
 				if (currentCellValue == 0)
@@ -252,6 +257,75 @@ void World::startCellularAutomatonGeneration(int **&matrix, initializer_list<int
 	delete[] secondMatrix;
 }
 
+int World::positionToNumber(Position pos)
+{
+	return pos.row * COLUMN_NUMBER + pos.col;
+}
+
+Position World::numberToPosition(int number)
+{
+	Position result;
+	result.row = number / ROW_NUMBER;
+	result.col = number % ROW_NUMBER;
+	return result;
+}
+
+void World::createGraph(int **matrix)
+{
+	// Выделяем память под все ячейки карты
+	adjacencyList.resize(COLUMN_NUMBER * ROW_NUMBER);
+
+	// Выведем результат в файл
+	ofstream fOut("GRAPHINFO.txt");
+	
+
+	for (int i{ 0 }; i < ROW_NUMBER; i++)
+	{
+		for (int j{ 0 }; j < COLUMN_NUMBER; j++)
+		{
+			Position currentPos{ i,j };
+			int currentNumber{positionToNumber(currentPos)};
+			/*fOut << "(" << currentPos.row << ","<<currentPos.col << ")->" << currentNumber << '\n';*/
+			// Если клетка проходимая - пол
+			if (matrix[i][j] == 0)
+			{
+				// Ищем соседние клетки, по которым можно пройти(пол)
+				Position neighbours[8]
+				{
+					{ currentPos.row - 1, currentPos.col - 1 },		// Левый верхний угол
+					{ currentPos.row - 1, currentPos.col  },		// Верхний
+					{ currentPos.row - 1, currentPos.col + 1  },	// Правый верхний угол
+					{ currentPos.row, currentPos.col - 1  },		// Левый
+					{ currentPos.row, currentPos.col + 1  },		// Правый
+					{ currentPos.row + 1, currentPos.col - 1 },		// Левый нижний угол
+					{ currentPos.row + 1, currentPos.col  },		// Нижний
+					{ currentPos.row + 1, currentPos.col + 1  }		// Правый нижний угол
+				};
+				for (Position pos : neighbours)
+				{
+					// Если в соседнюю клетку можно пройти, добавляем ее в список смежности текущей ячейки
+					if (isInBounds(pos) && matrix[pos.row][pos.col] == 0)
+					{
+						// Номер ячейки
+						int neighbourNum{positionToNumber(pos)};
+						adjacencyList[currentNumber].push_back(neighbourNum);
+					}
+				}
+			}
+		}
+	}
+	for (int i{ 0 }; i < adjacencyList.size(); i++)
+	{
+		fOut << i << ": ";
+		for (int neighbour : adjacencyList[i])
+		{
+			fOut << neighbour << ", ";
+		}
+		fOut << '\n';
+	}
+	fOut.close();
+}
+
 void World::generate()
 {
 	int** firstMatrix = new int*[ROW_NUMBER];
@@ -276,6 +350,9 @@ void World::generate()
 	// Рисуем границы карты
 	addMapBorders(firstMatrix);
 
+	// Создаём граф для перемещения объектов
+	createGraph(firstMatrix);
+
 	// Делаем карту из матрицы сгенерированных данных
 	makeMap(firstMatrix);
 
@@ -289,11 +366,11 @@ void World::generate()
 			{
 				if (Generator::getObject() <= TREASURE_APPEAR_PROBABILITY)
 				{
-					treasures.push_back(Treasure(Coordinate{ i, j }));
+					treasures.push_back(Treasure(Position{ i, j }));
 				}
 				else if (Generator::getObject() <= MONSTER_APPEAR_PROBABILITY)
 				{
-					monsters.push_back(Monster(Coordinate{ i,j }));
+					monsters.push_back(Monster(Position{ i,j }));
 				}
 			}
 		}

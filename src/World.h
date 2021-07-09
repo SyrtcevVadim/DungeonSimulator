@@ -2,6 +2,7 @@
 #include<string>
 #include<map>
 #include<list>
+#include<vector>
 #include<initializer_list>
 #include"Utilities.h"
 
@@ -11,6 +12,7 @@
 using std::map;
 using std::initializer_list;
 using std::string;
+using std::vector;
 using std::list;
 
 class World
@@ -52,6 +54,11 @@ private:
 	const int GENERATOR_ITERATIONS{ 10 };
 
 	/// <summary>
+	/// Список смежности для графа, описывающего сеть ячеек пола, по которым можно передвигаться
+	/// </summary>
+	vector<list<int>> adjacencyList;
+
+	/// <summary>
 	/// Хранит информацию обо всех сокровищах на карте
 	/// </summary>
 	list<Treasure> treasures;
@@ -67,6 +74,20 @@ private:
 	/// </summary>
 	char** playingMap;
 
+	/// <summary>
+	/// Переводит порядковый номер клетки в её координаты
+	/// </summary>
+	Position numberToPosition(int number);
+
+	/// <summary>
+	/// Переводит координаты клетки в её порядковый номер
+	/// </summary>
+	int positionToNumber(Position position);
+
+	/// <summary>
+	/// Создаёт граф на основе сгенерированной карты
+	/// </summary>
+	void createGraph(int **matrix);
 
 	/// <summary>
 	/// Запускает процедурную генерацию пещеры с помощью клеточного автомата.
@@ -84,18 +105,18 @@ private:
 	/// <summary>
 	/// Проверяет, находится ли координата в рамках матрицы
 	/// </summary>
-	bool isInBounds(Coordinate coord);
+	bool isInBounds(Position coord);
 
 	/// <summary>
 	/// Подсчитывает количество живых клеток-соседей для клетки с координатами coord
 	/// </summary>
 	/// <returns>Количество соседей у клетки с координатами coord</returns>
-	int countNeigbourCells(int** matrix, Coordinate coord);
+	int countNeigbourCells(int** matrix, Position coord);
 
 	/// <summary>
 	/// Проверяет, жива ли клетка по координатам coord
 	/// </summary>
-	bool isAlive(int** matrix, Coordinate coord);
+	bool isAlive(int** matrix, Position coord);
 
 	/// <summary>
 	/// Добавляет на карту граничные стены

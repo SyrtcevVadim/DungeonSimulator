@@ -1,11 +1,6 @@
 #include"DynamicEntity.h"
 
 
-DynamicEntity::DynamicEntity(Coordinate coordinate):
+DynamicEntity::DynamicEntity(Position coordinate):
 	Entity(coordinate)
 {}
-
-void DynamicEntity::move(Coordinate coordinate)
-{
-	currentCoordinate = coordinate;
-}

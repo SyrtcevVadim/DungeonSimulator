@@ -4,14 +4,14 @@
 class Entity
 {
 public:
-	Entity(Coordinate coordinate);
+	Entity(Position coordinate);
 
-	Coordinate getCoordinate();
+	Position getCoordinate();
 	Color getColor();
 	char getSymbol();
 protected:
 	// Координаты объетка на карте
-	Coordinate currentCoordinate;
+	Position currentCoordinate;
 	// Цвет объекта
 	Color color;
 	/// <summary>

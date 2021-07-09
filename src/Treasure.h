@@ -9,7 +9,7 @@ using std::vector;
 class Treasure: public StaticEntity
 {
 public:
-	Treasure(Coordinate coord);
+	Treasure(Position coord);
 
 private:
 	static const vector<char> SYMBOLS;
