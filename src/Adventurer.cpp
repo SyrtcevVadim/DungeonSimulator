@@ -4,6 +4,8 @@
 const vector<char> Adventurer::SYMBOLS{ 'A','B','C', 'a','b','c'};
 const Color Adventurer::COLOR{ Color::GREEN };
 
+const int Adventurer::MAX_HEALTH{ 20 };
+const int Adventurer::ATTACK{ 5 };
 
 Adventurer::Adventurer(Position pos) :
 	DynamicEntity(pos)
