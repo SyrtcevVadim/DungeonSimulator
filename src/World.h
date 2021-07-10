@@ -149,6 +149,16 @@ private:
 	/// </summary>
 	void makeMap(int** matrix);
 
+	/// <summary>
+	/// ¬озвращает случайный номер соседней €чейки дл€ €чейки с координатами pos
+	/// </summary>
+	int chooseRandomNeighbour(Position pos);
+
+	/// <summary>
+	/// —ообщает, должен ли двигатьс€ объект или нет
+	/// </summary>
+	bool haveToMove();
+
 	void move(Monster& object);
 
 	void move(Adventurer& object);

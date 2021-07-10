@@ -547,15 +547,10 @@ vector<int> World::BFS(int startNode, int destinationNode)
 	return res;
 }
 
-void World::move(Monster& object)
+int World::chooseRandomNeighbour(Position pos)
 {
-	// Проверяем, будет ли монстр перемещаться в этот ход
-	if (!Generator::getBool())
-	{
-		return;
-	}
 	// Номер ячейки, в которой находится объект
-	int number{ positionToNumber(object.getPosition()) };
+	int number{ positionToNumber(pos) };
 	// Получаем количество соседей для текущей ячейки
 	int neighbourNumber{ static_cast<int>(adjacencyList[number].size()) };
 	// Вычисляем индекс ячейки, в которую будет двигаться объект
@@ -571,14 +566,30 @@ void World::move(Monster& object)
 		}
 		counter++;
 	}
+	return nextCellNumber;
+}
+
+bool World::haveToMove()
+{
+	return Generator::getBool();
+}
+
+void World::move(Monster& object)
+{
+	// Проверяем, будет ли монстр перемещаться в этот ход
+	if (!haveToMove())
+	{
+		return;
+	}
+	
 	// Перемещаем объект
-	object.setPosition(numberToPosition(nextCellNumber));
+	object.setPosition(numberToPosition(chooseRandomNeighbour(object.getPosition())));
 }
 
 void World::move(Adventurer& object)
 {
 	// Проверяем, будет ли герой перемещаться в этот ход
-	if (!Generator::getBool())
+	if (!haveToMove())
 	{
 		return;
 	}
@@ -610,29 +621,13 @@ void World::move(Adventurer& object)
 		if (resultPathIndex == -1)
 		{
 			// Проверяем, будет ли монстр перемещаться в этот ход
-			if (!Generator::getBool())
+			if (!haveToMove())
 			{
 				return;
 			}
-			// Номер ячейки, в которой находится объект
-			int number{ positionToNumber(object.getPosition()) };
-			// Получаем количество соседей для текущей ячейки
-			int neighbourNumber{ static_cast<int>(adjacencyList[number].size()) };
-			// Вычисляем индекс ячейки, в которую будет двигаться объект
-			int nextCellIndex{ Generator::getNumber(0, neighbourNumber - 1) };
-			int nextCellNumber{ 0 };
-			int counter{ 0 };
-			for (int n : adjacencyList[number])
-			{
-				if (counter == nextCellIndex)
-				{
-					nextCellNumber = n;
-					break;
-				}
-				counter++;
-			}
+			
 			// Перемещаем объект
-			object.setPosition(numberToPosition(nextCellNumber));
+			object.setPosition(numberToPosition(chooseRandomNeighbour(object.getPosition())));
 		}
 		else
 		{
