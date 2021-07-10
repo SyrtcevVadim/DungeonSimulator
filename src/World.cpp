@@ -121,6 +121,24 @@ void World::makeMap(int** matrix)
 	}
 }
 
+void World::drawMapCell(Position pos)
+{
+	int col{ pos.col };
+	int row{ pos.row };
+	char currentSymbol{ playingMap[row][col] };
+
+	if (find(WALL_SYMBOLS.begin(), WALL_SYMBOLS.end(), currentSymbol) != WALL_SYMBOLS.end())
+	{
+		// Окрашиваем стены в тёмно-серый цвет
+		rlutil::setColor(Color::GRAY);
+	}
+	else if (find(FLOOR_SYMBOLS.begin(), FLOOR_SYMBOLS.end(), currentSymbol) != FLOOR_SYMBOLS.end())
+	{
+		rlutil::setColor(Color::WHITE);
+	}
+	cout << playingMap[row][col];
+}
+
 void World::drawMap()
 {
 	rlutil::cls();
@@ -130,18 +148,7 @@ void World::drawMap()
 	{
 		for (int j{ 0 }; j < COLUMN_NUMBER; j++)
 		{
-			char currentSymbol{ playingMap[i][j] };
-
-			if (find(WALL_SYMBOLS.begin(), WALL_SYMBOLS.end(), currentSymbol) != WALL_SYMBOLS.end())
-			{
-				// Окрашиваем стены в тёмно-серый цвет
-				rlutil::setColor(Color::GRAY);
-			}
-			else if (find(FLOOR_SYMBOLS.begin(), FLOOR_SYMBOLS.end(), currentSymbol) != FLOOR_SYMBOLS.end())
-			{
-				rlutil::setColor(Color::WHITE);
-			}
-			cout << playingMap[i][j];
+			drawMapCell(Position{ i, j });
 		}
 		cout << '\n';
 	}
@@ -169,6 +176,17 @@ void World::drawMap()
 		cout << m.getSymbol();
 	}
 
+	for (Adventurer a : adventureres)
+	{
+		int col{ a.getPosition().col };
+		int row{ a.getPosition().row };
+
+		// Рисуем объект
+		rlutil::locate(col + 1, row + 1);
+		rlutil::setColor(a.getColor());
+		cout << a.getSymbol();
+	}
+
 	rlutil::resetColor();
 	rlutil::locate(1, ROW_NUMBER + 1);
 }
@@ -193,18 +211,7 @@ void World::render()
 		int row{ m.getPosition().row };
 		// Стираем старое положение объекта
 		rlutil::locate(col + 1, row + 1);
-		char currentSymbol{ playingMap[row][col] };
-
-		if (find(WALL_SYMBOLS.begin(), WALL_SYMBOLS.end(), currentSymbol) != WALL_SYMBOLS.end())
-		{
-			// Окрашиваем стены в тёмно-серый цвет
-			rlutil::setColor(Color::GRAY);
-		}
-		else if (find(FLOOR_SYMBOLS.begin(), FLOOR_SYMBOLS.end(), currentSymbol) != FLOOR_SYMBOLS.end())
-		{
-			rlutil::setColor(Color::WHITE);
-		}
-		cout << playingMap[row][col];
+		drawMapCell(Position{ row, col });
 
 		// Просчитываем следующую позицию объекта
 		move(m);
@@ -416,6 +423,10 @@ void World::generate()
 				{
 					monsters.push_back(Monster(Position{ i,j }));
 				}
+				else if (Generator::getObject() <= ADVENTURER_APPER_PROBABILITY)
+				{
+					adventureres.push_back(Adventurer(Position{ i, j }));
+				}
 			}
 		}
 	}
@@ -431,6 +442,11 @@ void World::generate()
 
 void World::move(Monster& object)
 {
+	// Проверяем, будет ли монстр ходить в этот ход
+	if (!Generator::getBool())
+	{
+		return;
+	}
 	// Номер ячейки, в которой находится объект
 	int number{ positionToNumber(object.getPosition()) };
 	// Получаем количество соседей для текущей ячейки
@@ -450,8 +466,13 @@ void World::move(Monster& object)
 	}
 	// Перемещаем объект
 	rlutil::locate(1, ROW_NUMBER + 1);
-	cout << number << ", " << nextCellNumber << "      ";
+	//cout << number << ", " << nextCellNumber << "      ";
 	object.setPosition(numberToPosition(nextCellNumber));
+}
+
+void World::move(Adventurer& object)
+{
+
 }
 
 

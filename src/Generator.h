@@ -23,6 +23,8 @@ public:
 	/// </summary>
 	static int getNumber(int min, int max);
 
+	static bool getBool();
+
 private:
 	static mt19937 generator;
 

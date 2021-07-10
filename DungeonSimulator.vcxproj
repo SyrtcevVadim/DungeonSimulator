@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Adventurer.cpp" />
     <ClCompile Include="src\DynamicEntity.cpp" />
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\Generator.cpp" />
@@ -30,6 +31,7 @@
     <ClCompile Include="src\World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Adventurer.h" />
     <ClInclude Include="src\DynamicEntity.h" />
     <ClInclude Include="src\Entity.h" />
     <ClInclude Include="src\Generator.h" />

@@ -8,6 +8,7 @@
 
 #include"Treasure.h"
 #include"Monster.h"
+#include"Adventurer.h"
 
 using std::map;
 using std::initializer_list;
@@ -63,11 +64,22 @@ private:
 	/// </summary>
 	list<Monster> monsters;
 
+	/// <summary>
+	/// Хранит информацию обо всех исследователях
+	/// </summary>
+	list<Adventurer> adventureres;
+
 
 	/// <summary>
 	/// Матрица текущего состояния игрового поля
 	/// </summary>
 	char** playingMap;
+
+	/// <summary>
+	/// Рисует клетку карты в позиции pos
+	/// </summary>
+	/// <param name="pos"></param>
+	void drawMapCell(Position pos);
 
 	/// <summary>
 	/// Переводит порядковый номер клетки в её координаты
@@ -130,5 +142,7 @@ private:
 	void makeMap(int** matrix);
 
 	void move(Monster& object);
+
+	void move(Adventurer& object);
 };
 

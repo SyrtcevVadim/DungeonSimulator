@@ -13,6 +13,17 @@ void Generator::Init(string strSeed)
 	generator.seed(seed);
 }
 
+
+bool Generator::getBool()
+{
+	uniform_int_distribution<> boolDist(0, 1);
+	if (boolDist(generator) == 1)
+	{
+		return true;
+	}
+	return false;
+}
+
 int Generator::getCell()
 {
 	// 0 - пол. Появляется в 3-х случаях из 5
