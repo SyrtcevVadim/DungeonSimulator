@@ -544,16 +544,6 @@ vector<int> World::BFS(int startNode, int destinationNode)
 		}
 		std::reverse(res.begin(), res.end());
 	}
-	//// Записываем путь в файл
-	//ofstream fOut("Paths.txt", std::fstream::app);
-	//fOut << startNode << "->" << destinationNode << ": ";
-	/*for (int node : res)
-	{
-		fOut << node << ", ";
-	}*/
-	//fOut << '\n';
-	//fOut.close();
-
 	return res;
 }
 
@@ -619,9 +609,30 @@ void World::move(Adventurer& object)
 
 		if (resultPathIndex == -1)
 		{
-			// Удаляем человека с карты
-			/*drawMapCell(object.getPosition());
-			adventureres.remove(object);*/
+			// Проверяем, будет ли монстр перемещаться в этот ход
+			if (!Generator::getBool())
+			{
+				return;
+			}
+			// Номер ячейки, в которой находится объект
+			int number{ positionToNumber(object.getPosition()) };
+			// Получаем количество соседей для текущей ячейки
+			int neighbourNumber{ static_cast<int>(adjacencyList[number].size()) };
+			// Вычисляем индекс ячейки, в которую будет двигаться объект
+			int nextCellIndex{ Generator::getNumber(0, neighbourNumber - 1) };
+			int nextCellNumber{ 0 };
+			int counter{ 0 };
+			for (int n : adjacencyList[number])
+			{
+				if (counter == nextCellIndex)
+				{
+					nextCellNumber = n;
+					break;
+				}
+				counter++;
+			}
+			// Перемещаем объект
+			object.setPosition(numberToPosition(nextCellNumber));
 		}
 		else
 		{

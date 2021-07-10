@@ -31,9 +31,9 @@ enum  Color
 
 // Вероятность появления любого объекта от - значение от 1 до 1'000
 // Вероятность появления сокровища на полу
-const int TREASURE_APPEAR_PROBABILITY{ 10 };
+const int TREASURE_APPEAR_PROBABILITY{ 20 };
 // Вероятность появления монстра на полу
-const int MONSTER_APPEAR_PROBABILITY{ 15 };
+const int MONSTER_APPEAR_PROBABILITY{ 5 };
 
 const int ADVENTURER_APPER_PROBABILITY{ 5 };
 
