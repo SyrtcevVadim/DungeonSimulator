@@ -196,6 +196,7 @@ void World::drawMap()
 
 void World::render()
 {
+	rlutil::hidecursor();
 	// Обрабатываем статические объекты
 	for (Treasure &t : treasures)
 	{

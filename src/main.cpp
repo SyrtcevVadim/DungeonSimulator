@@ -11,16 +11,31 @@ using std::cin;
 using std::string;
 using std::getline;
 
+// Номера аргументов консоли
+#define SLEEP_TIME_ARG 1
+#define MAP_HEIGHT_ARG 2
+#define MAP_WIDTH_ARG 3
+#define GENERATION_SEED_ARG 4
 
-
-int main()
+int main(int argc, char **argv)
 {
-	string userSeed;
-	cout << "Please, enter a seed: ";
-	getline(cin, userSeed);
+	if (argc < 5)
+	{
+		cout << "NOT ENOUGH ARGUMENTS!\n";
+		return -1;
+	}
+	// Задержка хода в миллисекундах
+	int turnSleepTime{ atoi(argv[SLEEP_TIME_ARG]) };
+	// Высота карты (количество строк)
+	int mapHeight{ atoi(argv[MAP_HEIGHT_ARG]) };
+	// Ширина карты (количество столбцов)
+	int mapWidth{ atoi(argv[MAP_WIDTH_ARG]) };
+	// Ключе генерации (строка произвольной длины)
+	string generationSeed{ argv[GENERATION_SEED_ARG]};
 
-	Generator::Init(userSeed);
-	World world(50, 100);
+
+	Generator::Init(generationSeed);
+	World world(mapHeight, mapWidth);
 	world.generate();
 	// Рисуем первый кадр в консоли
 	world.drawMap();
@@ -28,7 +43,7 @@ int main()
 	// Цикл рендеринга
 	while (1)
 	{	
-		rlutil::msleep(300);
+		rlutil::msleep(turnSleepTime);
 		world.render();
 	}
 
