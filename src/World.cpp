@@ -128,6 +128,7 @@ void World::drawMapCell(Position pos)
 {
 	int col{ pos.col };
 	int row{ pos.row };
+	rlutil::locate(col + 1, row + 1);
 	char currentSymbol{ playingMap[row][col] };
 
 	if (find(WALL_SYMBOLS.begin(), WALL_SYMBOLS.end(), currentSymbol) != WALL_SYMBOLS.end())
@@ -575,7 +576,7 @@ void World::move(Adventurer& object)
 		return;
 	}
 
-	if (!object.hasGoal())
+	if (!object.hasGoal() || object.reachedGoal())
 	{
 		// Пути от человека ко всем сокровищам
 		vector<vector<int>> paths;
@@ -601,7 +602,9 @@ void World::move(Adventurer& object)
 
 		if (resultPathIndex == -1)
 		{
-			// TODO  удалить человека с карты
+			// Удаляем человека с карты
+			/*drawMapCell(object.getPosition());
+			adventureres.remove(object);*/
 		}
 		else
 		{

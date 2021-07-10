@@ -10,6 +10,7 @@ public:
 	Adventurer(Position pos);
 
 	void setGoal(vector<int> path);
+	bool reachedGoal();
 	bool hasGoal();
 	int getNextNode();
 

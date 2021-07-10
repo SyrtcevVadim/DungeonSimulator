@@ -28,11 +28,20 @@ bool operator==(const Adventurer& lVal, const Adventurer& rVal)
 
 bool Adventurer::hasGoal()
 {
-	if (currentNodeIndex < path.size())
+	if (currentNodeIndex <= path.size()-1 && path.size() != 0)
 	{
 		return true;
 	}
 
+	return false;
+}
+
+bool Adventurer::reachedGoal()
+{
+	if (currentNodeIndex == path.size() - 1)
+	{
+		return true;
+	}
 	return false;
 }
 
@@ -44,5 +53,5 @@ void Adventurer::setGoal(vector<int> path)
 
 int Adventurer::getNextNode()
 {
-	return path[currentNodeIndex++];
+	return path[++currentNodeIndex];
 }
