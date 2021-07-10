@@ -27,7 +27,6 @@ public:
 	/// </summary>
 	int getNextNode();
 
-	friend bool operator==(const Adventurer& lVal, const Adventurer& rVal);
 private:
 
 	static const int MAX_HEALTH;

@@ -18,15 +18,7 @@ Adventurer::Adventurer(Position pos) :
 	currentNodeIndex = 0;
 }
 
-bool operator==(const Adventurer& lVal, const Adventurer& rVal)
-{
-	if (lVal.symbol == rVal.symbol &&
-		lVal.currentCoordinate == rVal.currentCoordinate)
-	{
-		return true;
-	}
-	return false;
-}
+
 
 bool Adventurer::hasGoal()
 {

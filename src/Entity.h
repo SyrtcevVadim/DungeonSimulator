@@ -5,15 +5,41 @@ class Entity
 {
 public:
 	Entity(Position coordinate);
-
+	/// <summary>
+	/// Устанавливает координаты объекта
+	/// </summary>
 	void setPosition(Position coordinate);
+	/// <summary>
+	/// Возвращает координаты объетка
+	/// </summary>
 	Position getPosition();
+	/// <summary>
+	/// Возвращает цвет объекта
+	/// </summary>
 	Color getColor();
+	/// <summary>
+	/// Возвращает символ объекта
+	/// </summary>
 	char getSymbol();
+
+	friend bool operator ==(const Entity& lVal, const Entity& rVal);
 protected:
-	// Координаты объетка на карте
+	/// <summary>
+	/// Счётчик объектов
+	/// </summary>
+	static unsigned int counter;
+
+	/// <summary>
+	/// Хэш-число, позволяющее отличить один объект от другого
+	/// </summary>
+	unsigned int _hashValue;
+	/// <summary>
+	/// Координаты объетка на карте
+	/// </summary>
 	Position currentCoordinate;
-	// Цвет объекта
+	/// <summary>
+	/// Цвет объекта
+	/// </summary>
 	Color color;
 	/// <summary>
 	/// Символ объекта

@@ -12,11 +12,4 @@ Treasure::Treasure(Position coord) :
 	setSymbol(SYMBOLS[Generator::getNumber(0, SYMBOLS.size()-1)]);
 }
 
-bool operator==(const Treasure& lVal, const Treasure& rVal)
-{
-	if (lVal.currentCoordinate == rVal.currentCoordinate)
-	{
-		return true;
-	}
-	return false;
-}
+
