@@ -6,16 +6,19 @@
 #include"Utilities.h"
 #include"Generator.h"
 #include"Treasure.h"
+#include"Adventurer.h"
 
 
 #include<iostream>
 #include<string>
 #include<algorithm>
 #include<random>
+#include<stack>
 
 using std::ofstream;
 using std::cout;
 using std::cin;
+using std::stack;
 using std::vector;
 using std::string;
 using std::find;
@@ -211,7 +214,7 @@ void World::render()
 		int row{ m.getPosition().row };
 		// Стираем старое положение объекта
 		rlutil::locate(col + 1, row + 1);
-		drawMapCell(Position{ row, col });
+		drawMapCell(m.getPosition());
 
 		// Просчитываем следующую позицию объекта
 		move(m);
@@ -221,6 +224,25 @@ void World::render()
 		rlutil::locate(col + 1, row + 1);
 		rlutil::setColor(m.getColor());
 		cout << m.getSymbol();
+	}
+
+	for (Adventurer &a : adventureres)
+	{
+		// Старые координаты объекта
+		int col{ a.getPosition().col };
+		int row{ a.getPosition().row };
+		// Стираем объект с карты
+		rlutil::locate(col + 1, row + 1);
+		drawMapCell(a.getPosition());
+
+		move(a);
+		// Новые координаты объекта
+		col = a.getPosition().col;
+		row = a.getPosition().row;
+		// Рисуем объект в новой позиции
+		rlutil::locate(col + 1, row + 1);
+		rlutil::setColor(a.getColor());
+		cout << a.getSymbol();
 	}
 
 	rlutil::resetColor();
@@ -440,9 +462,85 @@ void World::generate()
 
 }
 
+vector<int> World::BFS(int startNode, int destinationNode)
+{
+	// Хранит информацию о том, из какой вершины мы попали в данную
+	// Пригодится для восстановления пути
+	vector<int> previous;
+	// Показывает, какая вершина уже хранится в стеке
+	vector<bool> inStack;
+	// Хранит информацию о том, какие вершины были посещены
+	vector<bool> visited;
+
+	int size{ ROW_NUMBER * COLUMN_NUMBER };
+	previous.resize(size); inStack.resize(size); visited.resize(size);
+	// Инициализируем массивы начальными значениями
+	for (int i{ 0 }; i < size; i++)
+	{
+		previous[i] = -1;
+		inStack[i] = false;
+		visited[i] = false;
+	}
+
+	// Стек, в котором хранятся вершины, которые надо посетить
+	stack<int> queue;
+	queue.push(startNode);
+	inStack[startNode] = true;
+	while (!queue.empty())
+	{
+		// Вытаскиваем из стека очередную вершину
+		int currentNode{ queue.top() }; queue.pop();
+		// Отмечаем, что мы ее посетили
+		visited[currentNode] = true;
+		// Отмечаем, что она больше не в стеке
+		inStack[currentNode] = false;
+		// Добавляем в стек все соседние вершины
+		for (int neighbour : adjacencyList[currentNode])
+		{
+			// Если вершина еще не посещена и она не находится в стеке
+			if (!visited[neighbour] && !inStack[neighbour])
+			{
+				// Запоминаем предыдущую вершину
+				previous[neighbour] = currentNode;
+				// Закидываем в стек
+				queue.push(neighbour);
+				// Запоминаем, что данная вершина в стеке
+				inStack[neighbour] = true;
+			}
+		}
+	}
+	// Пытаемся построить путь до конечной вершины
+	vector<int> res;
+
+	// Если до конечной вершины реально добраться из изначальной
+	if(previous[destinationNode]!=-1)
+	{
+		// Строим путь до начальной вершины
+		res.push_back(destinationNode);
+		int prevNode = previous[destinationNode];
+		while (prevNode != -1)
+		{
+			res.push_back(prevNode);
+			prevNode = previous[prevNode];
+		}
+		std::reverse(res.begin(), res.end());
+	}
+	//// Записываем путь в файл
+	//ofstream fOut("Paths.txt", std::fstream::app);
+	//fOut << startNode << "->" << destinationNode << ": ";
+	/*for (int node : res)
+	{
+		fOut << node << ", ";
+	}*/
+	//fOut << '\n';
+	//fOut.close();
+
+	return res;
+}
+
 void World::move(Monster& object)
 {
-	// Проверяем, будет ли монстр ходить в этот ход
+	// Проверяем, будет ли монстр перемещаться в этот ход
 	if (!Generator::getBool())
 	{
 		return;
@@ -465,14 +563,57 @@ void World::move(Monster& object)
 		counter++;
 	}
 	// Перемещаем объект
-	rlutil::locate(1, ROW_NUMBER + 1);
-	//cout << number << ", " << nextCellNumber << "      ";
 	object.setPosition(numberToPosition(nextCellNumber));
 }
 
 void World::move(Adventurer& object)
 {
+	// Проверяем, будет ли герой перемещаться в этот ход
+	if (!Generator::getBool())
+	{
+		return;
+	}
 
+	if (!object.hasGoal())
+	{
+		// Пути от человека ко всем сокровищам
+		vector<vector<int>> paths;
+
+		for (Treasure t : treasures)
+		{
+			// Строим кратчайший путь от человека до сокровища
+			paths.push_back(BFS(positionToNumber(object.getPosition()),
+								positionToNumber(t.getPosition())));
+		}
+
+		// Выбираем кратчайший путь с ненулевой длинной
+		int resultPathIndex{ -1 };
+		int minLength{ ROW_NUMBER*COLUMN_NUMBER };
+		for (int i{ 0 }; i < paths.size(); i++)
+		{
+			if (paths[i].size() != 0 && paths[i].size() < minLength)
+			{
+				minLength = paths[i].size();
+				resultPathIndex = i;
+			}
+		}
+
+		if (resultPathIndex == -1)
+		{
+			// TODO  удалить человека с карты
+		}
+		else
+		{
+			// Устанавливаем путь объекту
+			object.setGoal(paths[resultPathIndex]);
+		}
+	}
+	else
+	{
+		int nextNodeNumber = object.getNextNode();
+		// Перемещаем объект
+		object.setPosition(numberToPosition(nextNodeNumber));
+	}
 }
 
 

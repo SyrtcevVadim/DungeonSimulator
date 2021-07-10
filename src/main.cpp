@@ -28,7 +28,7 @@ int main()
 	// Цикл рендеринга
 	while (1)
 	{	
-		rlutil::msleep(600);
+		rlutil::msleep(300);
 		world.render();
 	}
 

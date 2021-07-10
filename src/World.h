@@ -57,7 +57,7 @@ private:
 	/// <summary>
 	/// Хранит информацию обо всех сокровищах на карте
 	/// </summary>
-	list<Treasure> treasures;
+	vector<Treasure> treasures;
 
 	/// <summary>
 	/// Хранит информацию обо всех монстрах на карте
@@ -69,6 +69,14 @@ private:
 	/// </summary>
 	list<Adventurer> adventureres;
 
+	/// <summary>
+	/// Производит поиск пути между вершинами startNode и destinationNode с помощью
+	/// обхода графа в ширину
+	/// </summary>
+	/// <param name="startNode">Стартовая вершина</param>
+	/// <param name="destinationNode">Конечная вершина</param>
+	/// <returns>Путь от стартовой вершины до конечной</returns>
+	vector<int>  BFS(int startNode, int destinationNode);
 
 	/// <summary>
 	/// Матрица текущего состояния игрового поля

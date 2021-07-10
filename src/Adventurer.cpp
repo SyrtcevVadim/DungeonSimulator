@@ -11,4 +11,28 @@ Adventurer::Adventurer(Position pos) :
 	char symbol{ SYMBOLS[Generator::getNumber(0, SYMBOLS.size() - 1)] };
 	setSymbol(symbol);
 	setColor(COLOR);
+
+	// Изначально у искателя нет цели
+	currentNodeIndex = 0;
+}
+
+bool Adventurer::hasGoal()
+{
+	if (currentNodeIndex < path.size())
+	{
+		return true;
+	}
+
+	return false;
+}
+
+void Adventurer::setGoal(vector<int> path)
+{
+	this->path = path;
+	currentNodeIndex = 0;
+}
+
+int Adventurer::getNextNode()
+{
+	return path[currentNodeIndex++];
 }

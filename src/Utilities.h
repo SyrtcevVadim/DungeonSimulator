@@ -16,7 +16,9 @@ public:
 	/// Íמלונ סעמכבצא
 	/// </summary>
 	int col;
+
 };
+
 
 enum  Color
 {
