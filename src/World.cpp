@@ -238,6 +238,23 @@ void World::render()
 		drawMapCell(a.getPosition());
 
 		move(a);
+		// Проверяем, нашёл ли объект сокровище и остались ли они вообще
+		if (a.reachedGoal() && !treasures.empty())
+		{
+			auto res{ treasures.begin() };
+			for (auto i{ treasures.begin() }; i != treasures.end(); i++)
+			{
+				if (i->getPosition() == a.getPosition())
+				{
+					res = i;
+				}
+			}
+			// Удаляем объект с карты
+			drawMapCell(res->getPosition());
+			// Удаляем объект из списка
+			treasures.erase(res);
+		}
+
 		// Новые координаты объекта
 		col = a.getPosition().col;
 		row = a.getPosition().row;
