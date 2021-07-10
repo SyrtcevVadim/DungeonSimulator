@@ -12,6 +12,8 @@ public:
 	void setGoal(vector<int> path);
 	bool hasGoal();
 	int getNextNode();
+
+	friend bool operator==(const Adventurer& lVal, const Adventurer& rVal);
 private:
 
 	/// <summary>

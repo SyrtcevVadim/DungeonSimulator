@@ -17,6 +17,8 @@ public:
 	/// </summary>
 	int col;
 
+	friend bool operator==(const Position& lVal, const Position& rVal);
+
 };
 
 
