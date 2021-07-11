@@ -62,12 +62,12 @@ private:
 	/// <summary>
 	/// Хранит информацию обо всех монстрах на карте
 	/// </summary>
-	list<Monster> monsters;
+	vector<Monster> monsters;
 
 	/// <summary>
 	/// Хранит информацию обо всех исследователях
 	/// </summary>
-	list<Adventurer> adventureres;
+	vector<Adventurer> adventureres;
 
 	/// <summary>
 	/// Производит поиск пути между вершинами startNode и destinationNode с помощью

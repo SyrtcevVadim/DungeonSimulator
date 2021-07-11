@@ -45,8 +45,7 @@ int main(int argc, char **argv)
 	// Цикл рендеринга
 	while (1)
 	{	
-		/*rlutil::msleep(turnSleepTime);*/
-		cin.get();
+		rlutil::msleep(turnSleepTime);
 		world.render();
 	}
 

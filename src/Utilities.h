@@ -34,9 +34,9 @@ enum  Color
 // ¬еро€тность по€влени€ сокровища на полу
 const int TREASURE_APPEAR_PROBABILITY{ 20 };
 // ¬еро€тность по€влени€ монстра на полу
-const int MONSTER_APPEAR_PROBABILITY{ 5 };
+const int MONSTER_APPEAR_PROBABILITY{ 15 };
 
-const int ADVENTURER_APPER_PROBABILITY{ 5 };
+const int ADVENTURER_APPER_PROBABILITY{ 6 };
 
 const vector<char> FLOOR_SYMBOLS{ '.',',','`','"','^'};
 const vector<char> WALL_SYMBOLS{ static_cast<char>(176), static_cast<char>(177), static_cast<char>(178) };

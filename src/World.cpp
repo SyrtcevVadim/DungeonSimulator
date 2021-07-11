@@ -243,6 +243,32 @@ void World::render()
 		rlutil::locate(col + 1, row + 1);
 		rlutil::setColor(m.getColor());
 		cout << m.getSymbol();
+
+		// Проверяем, может ли монстр кого-нибудь ударить
+		for (Position pos : getNeighboursPositions(m.getPosition(), m.getAttackRadius()))
+		{
+			for (Adventurer& a : adventureres)
+			{
+				if (pos == a.getPosition())
+				{
+					// бьём человека!
+					rlutil::locate(1, ROW_NUMBER + 1);
+					rlutil::resetColor();
+					cout << "FIGHT WITH AN ADVENTURER!\t\t\t\n";
+					if (m.combat(a))
+					{
+						// В случае, если человек умер, стираем его с карты
+						drawMapCell(a.getPosition());
+						// Удаляем его из списка людей
+						rlutil::locate(1, ROW_NUMBER + 1);
+						rlutil::resetColor();
+						cout << "ADVENTURER WAS DEFEATED!\t\t\t\n";
+						adventureres.erase(find(adventureres.begin(), adventureres.end(), a));
+						break;
+					}
+				}
+			}
+		}
 	}
 
 	for (Adventurer &a : adventureres)
@@ -283,6 +309,32 @@ void World::render()
 		rlutil::locate(col + 1, row + 1);
 		rlutil::setColor(a.getColor());
 		cout << a.getSymbol();
+
+		// Проверяем, может ли человек кого-нибудь ударить
+		for (Position pos : getNeighboursPositions(a.getPosition(), a.getAttackRadius()))
+		{
+			for (Monster& m : monsters)
+			{
+				if (pos == m.getPosition())
+				{
+					// бьём монстра!
+					rlutil::resetColor();
+					rlutil::locate(1, ROW_NUMBER + 1);
+					cout << "FIGHT WITH A MONSTER!\t\t\t\n";
+					if (a.combat(m))
+					{
+						// В случае, если монстр умер, стираем его с карты
+						drawMapCell(a.getPosition());
+						// Удаляем его из списка монстров
+						monsters.erase(find(monsters.begin(), monsters.end(), m));
+						rlutil::resetColor();
+						rlutil::locate(1, ROW_NUMBER + 1);
+						cout << "MONSTER WAS SLAIN BY "<< a.getSymbol() << "!\t\t\t\n";
+						break;
+					}
+				}
+			}
+		}
 	}
 
 	rlutil::resetColor();
@@ -607,6 +659,7 @@ void World::move(Monster& object)
 	{
 		return;
 	}
+
 	// Показывает, ходил ли монстр в этот ход или нет
 	bool moved{ false };
 	// Ищем соперника монстру

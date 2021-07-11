@@ -19,7 +19,7 @@ Monster::Monster(Position coord) :
 	// Устанавливаем характеристики
 	health = 10;
 	attack = 4;
-	viewRadius = 3;
+	viewRadius = 5;
 	attackRadius = 1;
 	// Изначально у монстра нет никакой цели
 	currentNodeIndex = 0;
