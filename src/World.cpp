@@ -97,6 +97,7 @@ World::World(unsigned int rowNum, unsigned int colNum) :
 	{
 		playingMap[i] = new char[COLUMN_NUMBER];
 	}
+	turnCounter = 0u;
 }
 
 void World::addMapBorders(int** matrix)
@@ -197,7 +198,7 @@ void World::drawMap()
 		cout << m.getSymbol();
 	}
 
-	for (Adventurer a : adventureres)
+	for (Adventurer a : adventurers)
 	{
 		int col{ a.getPosition().col };
 		int row{ a.getPosition().row };
@@ -208,6 +209,64 @@ void World::drawMap()
 		cout << a.getSymbol();
 	}
 
+	rlutil::resetColor();
+	rlutil::locate(1, ROW_NUMBER + 1);
+}
+
+void World::showInfo()
+{
+	rlutil::resetColor();
+	// Отображаем информацию о количестве сокровищ
+	rlutil::locate(COLUMN_NUMBER + 1, 1);
+	cout << "Remaining treasures: " << treasures.size() << "\t\t\t\n";
+	// Отображаем информацию о количестве монстров
+	rlutil::locate(COLUMN_NUMBER + 1, 2);
+	cout << "Monsters: "<<monsters.size() <<'\t';
+	int monstersCounters[3]{ 0 };
+	for (Monster& m : monsters)
+	{
+		switch (m.getSymbol())
+		{
+		case 'm':
+			monstersCounters[0]++; break;
+		case 'M':
+			monstersCounters[1]++; break;
+		case '&':
+			monstersCounters[2]++; break;
+		}
+	}
+	cout << "m: " << monstersCounters[0] << 
+		"\tM: " << monstersCounters[1]  << 
+		"\t&: " << monstersCounters[2] << "\t\t\t\n";
+	rlutil::locate(COLUMN_NUMBER + 1, 3);
+	// Отображаем информацию о количестве людей
+	cout << "Adventurers: "<<adventurers.size() <<"\t";
+	// Счётчик количества людей типа 'A'
+	int adventurersCounters[6]{ 0 };
+	for (Adventurer& a : adventurers)
+	{
+		switch (a.getSymbol())
+		{
+		case 'A': 
+			++adventurersCounters[0]; break;
+		case 'B':
+			++adventurersCounters[1]; break;
+		case 'C':
+			++adventurersCounters[2]; break;
+		case 'a':
+			++adventurersCounters[3]; break;
+		case 'b':
+			++adventurersCounters[4]; break;
+		case 'c':
+			++adventurersCounters[5]; break;
+		}
+	}
+	cout << "A: " << adventurersCounters[0] <<
+		"\tB: " << adventurersCounters[1] <<
+		"\tC: " << adventurersCounters[2] <<
+		"\ta: " << adventurersCounters[3] <<
+		"\tb: " << adventurersCounters[4] <<
+		"\tc: " << adventurersCounters[5] << '\t';
 	rlutil::resetColor();
 	rlutil::locate(1, ROW_NUMBER + 1);
 }
@@ -247,7 +306,7 @@ void World::render()
 		// Проверяем, может ли монстр кого-нибудь ударить
 		for (Position pos : getNeighboursPositions(m.getPosition(), m.getAttackRadius()))
 		{
-			for (Adventurer& a : adventureres)
+			for (Adventurer& a : adventurers)
 			{
 				if (pos == a.getPosition())
 				{
@@ -263,7 +322,7 @@ void World::render()
 						rlutil::locate(1, ROW_NUMBER + 1);
 						rlutil::resetColor();
 						cout << "ADVENTURER WAS DEFEATED!\t\t\t\n";
-						adventureres.erase(find(adventureres.begin(), adventureres.end(), a));
+						adventurers.erase(find(adventurers.begin(), adventurers.end(), a));
 						break;
 					}
 				}
@@ -271,7 +330,7 @@ void World::render()
 		}
 	}
 
-	for (Adventurer &a : adventureres)
+	for (Adventurer &a : adventurers)
 	{
 		// Старые координаты объекта
 		int col{ a.getPosition().col };
@@ -337,6 +396,8 @@ void World::render()
 		}
 	}
 
+	// Отображаем информационное поле в правой части экрана
+	showInfo();
 	rlutil::resetColor();
 	rlutil::locate(1, ROW_NUMBER + 1);
 }
@@ -539,7 +600,7 @@ void World::generate()
 				}
 				else if (Generator::getObject() <= ADVENTURER_APPER_PROBABILITY)
 				{
-					adventureres.push_back(Adventurer(Position{ i, j }));
+					adventurers.push_back(Adventurer(Position{ i, j }));
 				}
 			}
 		}
@@ -667,7 +728,7 @@ void World::move(Monster& object)
 	for (Position pos : getNeighboursPositions(object.getPosition(), object.getViewRadius()))
 	{
 		// Проверяем, нет ли в радиусе обзора монстра противника
-		for (Adventurer& a : adventureres)
+		for (Adventurer& a : adventurers)
 		{
 			if (pos == a.getPosition())
 			{

@@ -40,6 +40,7 @@ public:
 
 
 private:
+	unsigned int turnCounter;
 	/// <summary>
 	/// Ширина игрового поля
 	/// </summary
@@ -67,7 +68,7 @@ private:
 	/// <summary>
 	/// Хранит информацию обо всех исследователях
 	/// </summary>
-	vector<Adventurer> adventureres;
+	vector<Adventurer> adventurers;
 
 	/// <summary>
 	/// Производит поиск пути между вершинами startNode и destinationNode с помощью
@@ -169,5 +170,10 @@ private:
 	void move(Monster& object);
 
 	void move(Adventurer& object);
+
+	/// <summary>
+	/// Отображает информацию об игровых объектах в консоли
+	/// </summary>
+	void showInfo();
 };
 
