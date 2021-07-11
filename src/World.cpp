@@ -45,6 +45,23 @@ bool World::isAlive(int** matrix, Position coord)
 }
 
 
+vector<Position> World::getNeighboursPositions(Position initial, int radius)
+{
+	vector<Position> result;
+	for (int row{ initial.row - radius }; row <= (initial.row + radius); row++)
+	{
+		for (int col{ initial.col - radius }; col <= (initial.col + radius); col++)
+		{
+			Position current{ row, col };
+			if (isInBounds(current) && (current != initial))
+			{
+				result.push_back(current);
+			}
+		}
+	}
+	return result;
+}
+
 int World::countNeigbourCells(int** matrix, Position coord)
 {
 	int counter{ 0 };
@@ -241,7 +258,7 @@ void World::render()
 		// Проверяем, нашёл ли объект сокровище и остались ли они вообще
 		if (a.reachedGoal() && !treasures.empty())
 		{
-			auto res{ treasures.begin() };
+			auto res{ treasures.end() };
 			for (auto i{ treasures.begin() }; i != treasures.end(); i++)
 			{
 				if (i->getPosition() == a.getPosition())
@@ -249,10 +266,14 @@ void World::render()
 					res = i;
 				}
 			}
-			// Удаляем объект с карты
-			drawMapCell(res->getPosition());
-			// Удаляем объект из списка
-			treasures.erase(res);
+			// Если сокровище было найдено
+			if (res != treasures.end())
+			{
+				// Удаляем объект с карты
+				drawMapCell(res->getPosition());
+				// Удаляем объект из списка
+				treasures.erase(res);
+			}
 		}
 
 		// Новые координаты объекта
@@ -642,7 +663,6 @@ void World::move(Adventurer& object)
 		object.setPosition(numberToPosition(nextNodeNumber));
 	}
 }
-
 
 World::~World()
 {

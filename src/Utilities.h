@@ -18,6 +18,7 @@ public:
 	int col;
 
 	friend bool operator==(const Position& lVal, const Position& rVal);
+	friend bool operator!=(const Position& lVal, const Position& rVal);
 
 };
 

@@ -34,21 +34,7 @@ int main(int argc, char **argv)
 	// Ширина карты (количество столбцов)
 	int mapWidth{ atoi(argv[MAP_WIDTH_ARG]) };
 	// Ключе генерации (строка произвольной длины)
-	string generationSeed{ argv[GENERATION_SEED_ARG]};
-
-	/*Position f{ 1,2 }, s{ 1,3 }, t{ 1,2 };
-	cout << "1,2 == 1,3: " << (f == s) << '\n';
-	cout << "1,2 == 1,2: " << (f == t) << '\n';
-
-	Treasure a(f), b(s), c(t);
-	cout << "a == b: " << (a == b) << '\n';
-	cout << "a == c: " << (a == c) << '\n';
-	
-
-	Adventurer x(Position{ 10, 20 }), y(Position{ 55, 11 }), z(Position{ 10, 20 });
-	cout << "x == y: " << (x == y) << '\n';
-	cout << "x == z: " << (z == x) << '\n';
-	cin.get();*/
+	string generationSeed{ argv[GENERATION_SEED_ARG] };
 
 	Generator::Init(generationSeed);
 	World world(mapHeight, mapWidth);
@@ -59,7 +45,7 @@ int main(int argc, char **argv)
 	// Цикл рендеринга
 	while (1)
 	{	
-		rlutil::msleep(turnSleepTime);
+		cin.get();
 		world.render();
 	}
 

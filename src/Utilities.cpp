@@ -8,3 +8,8 @@ bool operator==(const Position& lVal, const Position& rVal)
 	}
 	return false;
 }
+
+bool operator!=(const Position& lVal, const Position& rVal)
+{
+	return !(lVal == rVal);
+}

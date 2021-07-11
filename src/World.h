@@ -155,6 +155,13 @@ private:
 	int chooseRandomNeighbour(Position pos);
 
 	/// <summary>
+	/// Возвращает список соседних ячеек карты в радиусе radius
+	/// </summary>
+	/// <param name="initial">Координаты ячейки, для которой ищутся все соседние ячейки</param>
+	/// <param name="radius">Радиус поиска</param>
+	vector<Position> getNeighboursPositions(Position initial, int radius);
+
+	/// <summary>
 	/// Сообщает, должен ли двигаться объект или нет
 	/// </summary>
 	bool haveToMove();

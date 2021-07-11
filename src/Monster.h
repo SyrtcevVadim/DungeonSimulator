@@ -1,5 +1,4 @@
 #pragma once
-
 #include"DynamicEntity.h"
 #include"Generator.h"
 #include<vector>
