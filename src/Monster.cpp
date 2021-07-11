@@ -10,13 +10,18 @@ using std::vector;
 const vector<char> Monster::SYMBOLS{ 'm', 'M', '&'};
 const Color Monster::COLOR{ Color::RED };
 
-const int Monster::MAX_HEALTH{ 10 };
-const int Monster::ATTACK{ 2 };
 
 Monster::Monster(Position coord) :
 	DynamicEntity(coord)
 {
 	setColor(COLOR);
 	setSymbol(SYMBOLS[Generator::getNumber(0, SYMBOLS.size() - 1)]);
+	// Устанавливаем характеристики
+	health = 10;
+	attack = 4;
+	viewRadius = 3;
+	attackRadius = 1;
+	// Изначально у монстра нет никакой цели
+	currentNodeIndex = 0;
 }
 

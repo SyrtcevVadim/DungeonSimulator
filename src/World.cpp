@@ -405,14 +405,14 @@ void World::createGraph(int **matrix)
 				// Ищем соседние клетки, по которым можно пройти(пол)
 				Position neighbours[8]
 				{
-					{ currentPos.row - 1, currentPos.col - 1 },		// Левый верхний угол
+					//{ currentPos.row - 1, currentPos.col - 1 },		// Левый верхний угол
 					{ currentPos.row - 1, currentPos.col  },		// Верхний
-					{ currentPos.row - 1, currentPos.col + 1  },	// Правый верхний угол
+					//{ currentPos.row - 1, currentPos.col + 1  },	// Правый верхний угол
 					{ currentPos.row, currentPos.col - 1  },		// Левый
 					{ currentPos.row, currentPos.col + 1  },		// Правый
-					{ currentPos.row + 1, currentPos.col - 1 },		// Левый нижний угол
+					//{ currentPos.row + 1, currentPos.col - 1 },		// Левый нижний угол
 					{ currentPos.row + 1, currentPos.col  },		// Нижний
-					{ currentPos.row + 1, currentPos.col + 1  }		// Правый нижний угол
+					//{ currentPos.row + 1, currentPos.col + 1  }		// Правый нижний угол
 				};
 				for (Position pos : neighbours)
 				{
@@ -504,7 +504,7 @@ void World::generate()
 
 vector<int> World::BFS(int startNode, int destinationNode)
 {
-	// Хранит информацию о том, из какой вершины мы попали в данную
+	// Хранит информацию о том, из какой вершины мы попали в данную.
 	// Пригодится для восстановления пути
 	vector<int> previous;
 	// Показывает, какая вершина уже хранится в стеке
@@ -530,6 +530,11 @@ vector<int> World::BFS(int startNode, int destinationNode)
 	{
 		// Вытаскиваем из стека очередную вершину
 		int currentNode{ queue.top() }; queue.pop();
+		if (currentNode == destinationNode)
+		{
+			// Если мы дошли до конечной вершины, то заканчиваем поиск пути
+			break;
+		}
 		// Отмечаем, что мы ее посетили
 		visited[currentNode] = true;
 		// Отмечаем, что она больше не в стеке
@@ -602,9 +607,36 @@ void World::move(Monster& object)
 	{
 		return;
 	}
-	
-	// Перемещаем объект
-	object.setPosition(numberToPosition(chooseRandomNeighbour(object.getPosition())));
+	// Показывает, ходил ли монстр в этот ход или нет
+	bool moved{ false };
+	// Ищем соперника монстру
+	// Проверяем соседние клетки
+	for (Position pos : getNeighboursPositions(object.getPosition(), object.getViewRadius()))
+	{
+		// Проверяем, нет ли в радиусе обзора монстра противника
+		for (Adventurer& a : adventureres)
+		{
+			if (pos == a.getPosition())
+			{
+				// Устанавливаем монстру цель
+				vector<int> path = BFS(positionToNumber(object.getPosition()),
+					positionToNumber(pos));
+				// Двигаем монстра к цели
+				if (path.size() > 0)
+				{
+					object.setPosition(numberToPosition(path[1]));
+					moved = true;
+					break;
+				}	
+			}
+		}
+	}
+
+	if(!moved)
+	{
+		// Перемещаем монстра в случайном направлении
+		object.setPosition(numberToPosition(chooseRandomNeighbour(object.getPosition())));
+	}
 }
 
 void World::move(Adventurer& object)
@@ -622,13 +654,13 @@ void World::move(Adventurer& object)
 
 		for (Treasure t : treasures)
 		{
-			// Строим кратчайший путь от человека до сокровища
+			// Строим путь от человека до сокровища
 			paths.push_back(BFS(positionToNumber(object.getPosition()),
 								positionToNumber(t.getPosition())));
 		}
 
-		// Выбираем кратчайший путь с ненулевой длинной
 		int resultPathIndex{ -1 };
+		// Выбираем кратчайший путь
 		int minLength{ ROW_NUMBER*COLUMN_NUMBER };
 		for (int i{ 0 }; i < paths.size(); i++)
 		{
@@ -647,7 +679,7 @@ void World::move(Adventurer& object)
 				return;
 			}
 			
-			// Перемещаем объект
+			// Перемещаем объект в случайном направлении
 			object.setPosition(numberToPosition(chooseRandomNeighbour(object.getPosition())));
 		}
 		else
