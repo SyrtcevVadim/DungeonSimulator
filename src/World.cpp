@@ -518,14 +518,14 @@ void World::createGraph(int **matrix)
 				// Ищем соседние клетки, по которым можно пройти(пол)
 				Position neighbours[8]
 				{
-					//{ currentPos.row - 1, currentPos.col - 1 },		// Левый верхний угол
+					{ currentPos.row - 1, currentPos.col - 1 },		// Левый верхний угол
 					{ currentPos.row - 1, currentPos.col  },		// Верхний
-					//{ currentPos.row - 1, currentPos.col + 1  },	// Правый верхний угол
+					{ currentPos.row - 1, currentPos.col + 1  },	// Правый верхний угол
 					{ currentPos.row, currentPos.col - 1  },		// Левый
 					{ currentPos.row, currentPos.col + 1  },		// Правый
-					//{ currentPos.row + 1, currentPos.col - 1 },		// Левый нижний угол
+					{ currentPos.row + 1, currentPos.col - 1 },		// Левый нижний угол
 					{ currentPos.row + 1, currentPos.col  },		// Нижний
-					//{ currentPos.row + 1, currentPos.col + 1  }		// Правый нижний угол
+					{ currentPos.row + 1, currentPos.col + 1  }		// Правый нижний угол
 				};
 				for (Position pos : neighbours)
 				{
