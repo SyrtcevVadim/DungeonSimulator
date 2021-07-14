@@ -218,10 +218,10 @@ void World::showInfo()
 	rlutil::resetColor();
 	// Отображаем информацию о количестве сокровищ
 	rlutil::locate(COLUMN_NUMBER + 1, 1);
-	cout << "Remaining treasures: " << treasures.size() << "\t\t\t\n";
+	cout << "Remaining treasures: " << treasures.size() << "    \n";
 	// Отображаем информацию о количестве монстров
 	rlutil::locate(COLUMN_NUMBER + 1, 2);
-	cout << "Monsters: "<<monsters.size() <<'\t';
+	cout << "Monsters: "<<monsters.size() <<"    ";
 	int monstersCounters[3]{ 0 };
 	for (Monster& m : monsters)
 	{
@@ -237,10 +237,10 @@ void World::showInfo()
 	}
 	cout << "m: " << monstersCounters[0] << 
 		"\tM: " << monstersCounters[1]  << 
-		"\t&: " << monstersCounters[2] << "\t\t\t\n";
+		"\t&: " << monstersCounters[2] << "   \n";
 	rlutil::locate(COLUMN_NUMBER + 1, 3);
 	// Отображаем информацию о количестве людей
-	cout << "Adventurers: "<<adventurers.size() <<"\t";
+	cout << "Adventurers: "<<adventurers.size() <<"   ";
 	// Счётчик количества людей типа 'A'
 	int adventurersCounters[6]{ 0 };
 	for (Adventurer& a : adventurers)
@@ -262,11 +262,11 @@ void World::showInfo()
 		}
 	}
 	cout << "A: " << adventurersCounters[0] <<
-		"\tB: " << adventurersCounters[1] <<
-		"\tC: " << adventurersCounters[2] <<
-		"\ta: " << adventurersCounters[3] <<
-		"\tb: " << adventurersCounters[4] <<
-		"\tc: " << adventurersCounters[5] << '\t';
+		"  B: " << adventurersCounters[1] <<
+		"  C: " << adventurersCounters[2] <<
+		"  a: " << adventurersCounters[3] <<
+		"  b: " << adventurersCounters[4] <<
+		"  c: " << adventurersCounters[5] << "\t";
 	rlutil::resetColor();
 	rlutil::locate(1, ROW_NUMBER + 1);
 }
@@ -313,7 +313,7 @@ void World::render()
 					// бьём человека!
 					rlutil::locate(1, ROW_NUMBER + 1);
 					rlutil::resetColor();
-					cout << "FIGHT WITH AN ADVENTURER!\t\t\t\n";
+					cout << "FIGHT WITH AN ADVENTURER!     \n";
 					if (m.combat(a))
 					{
 						// В случае, если человек умер, стираем его с карты
@@ -321,7 +321,7 @@ void World::render()
 						// Удаляем его из списка людей
 						rlutil::locate(1, ROW_NUMBER + 1);
 						rlutil::resetColor();
-						cout << "ADVENTURER WAS DEFEATED!\t\t\t\n";
+						cout << "ADVENTURER WAS DEFEATED!    \t\n";
 						adventurers.erase(find(adventurers.begin(), adventurers.end(), a));
 						break;
 					}
@@ -379,7 +379,7 @@ void World::render()
 					// бьём монстра!
 					rlutil::resetColor();
 					rlutil::locate(1, ROW_NUMBER + 1);
-					cout << "FIGHT WITH A MONSTER!\t\t\t\n";
+					cout << "FIGHT WITH A MONSTER!   \t\n";
 					if (a.combat(m))
 					{
 						// В случае, если монстр умер, стираем его с карты
@@ -388,7 +388,7 @@ void World::render()
 						monsters.erase(find(monsters.begin(), monsters.end(), m));
 						rlutil::resetColor();
 						rlutil::locate(1, ROW_NUMBER + 1);
-						cout << "MONSTER WAS SLAIN BY "<< a.getSymbol() << "!\t\t\t\n";
+						cout << "MONSTER WAS SLAIN BY "<< a.getSymbol() << "!   \t\n";
 						break;
 					}
 				}
@@ -693,6 +693,10 @@ int World::chooseRandomNeighbour(Position pos)
 	// Получаем количество соседей для текущей ячейки
 	int neighbourNumber{ static_cast<int>(adjacencyList[number].size()) };
 	// Вычисляем индекс ячейки, в которую будет двигаться объект
+	if (neighbourNumber == 0)
+	{
+		return positionToNumber(pos);
+	}
 	int nextCellIndex{ Generator::getNumber(0, neighbourNumber - 1) };
 	int nextCellNumber{ 0 };
 	int counter{ 0 };
